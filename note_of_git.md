@@ -44,6 +44,14 @@ git记录的是修改的内容
 后面的版本依赖于前面的版本
 ![描述1](image/1.png)
 
+## 查看版本
+
+git log
+git log --graph
+git log --graph --pretty=format:"%h %s"
+git log --pretty=oneline --graph
+
+
 ## 版本回退
 
 1. 创建好一个新的版本后，默认会有一个HEAD指向当前版本
@@ -103,7 +111,7 @@ git status
 也就是说，commit只记录暂存区的修改，任何没有加入到暂存区的修改都不会被记录
 
 **丢弃改动**
-git chekout -- [文件名]
+git checkout -- [文件名]
 如果已经把改动后的加入到暂存区，就需要以下命令来取消暂存
 git reset HEAD [文件名]
 通过git status可以发现文件已经被取消暂存，可以用git checkout来放弃改动
@@ -155,6 +163,12 @@ git checkout -b dev
 git checkout master
 直接让HEAD重新指向master
 此时可以把dev分支上的内容合并到master分支上
+
+在git的2.23版本以后，切换分支可以使用switch
+`git switch <分支名> # 切换分支 `
+`git swithc -c <分支名> # 创建并切换分支`
+可以把-c理解为create
+
 
 **合并操作**
 git merge dev
@@ -247,6 +261,18 @@ git status  --> 发现是干净的
 git stash list --> 列出保存的工作现场
 如何回复工作现场
 git stash pop
+
+## rebase变基 --可选操作
+
+rebase使得git记录简洁
+
+git log容易变得冗长
+
+把某些记录整合成一条
+git rebase -i <版本号x> --> 即把当前的记录到版本号x之间进行合并
+git rebase -i <HEAD~X> --> 如果x=3，即把当前记录到版本3之前进行合并
+
+注意：合并记录时，不要合并已经push到远程仓库的记录
 
 # 远程操作 
 
@@ -374,7 +400,49 @@ https://用户名.github.io/仓库名
 gitlab在国内访问比较快，可以通过gitlab来下载github的项目
 
 
+# 总结
 
+**三个区域**
++ 工作区
++ 暂存区
++ 版本库
+
+
+![区域切换](image/区域切换.png)
+
+1. 进入文件夹
+2. git init --> 生成了.git 文件夹，开始管理该文件夹，即工作区
+3. 配置：
+   + 用户名：git config --global user.name 'xxx'
+   + 邮箱：git config --global user.email 'xx@xxx'
+4. git status --> 检测整个目录下文件的状态，即工作区的状态
+    + 两种颜色:
+    - 红色-->未被管理的文件或修改了以后的文件
+    - 绿色-->已经管理了，但是没有生成版本  
+5. git checkout <文件名/目录名> --> 放弃修改？
+6. git add <文件名/目录名> --> 加入到暂存区，git add .管理整个目录
+7. git commit -m '自定义版本信息' --> 提交版本到版本库
+8. git log --> 查看当前版本记录
+9. git reflog --> 查看全部版本记录 
+10. git reset <版本号>或者<HEAD> --> 回滚操作，从暂存区挪到工作区
+11. git reset --hard <版本号>或者<HEAD> --> 回滚操作，从版本库挪到工作区未修改状态
+12. git reset --soft <版本号>或者<HEAD> --> 回滚操作，从版本库挪到暂存区
+13. git reset --mix <版本号>或者<HEAD> --> 回滚操作，从版本库挪到工作区已修改状态
+14. git checkout -- <文件名> --> 放弃修改
+15. git branch --> 查看分支
+16. git branch <分支名> --> 创建分支，可以创建多个分支，不仅仅是两个
+17. git checkout <分支名> --> 切换分支
+18. git merge <分支名>  --> 合并分支，回到master分支进行操作
+19. git branch -d <分支名> --> 删除分支
+20. git remote add origin <url>  --> 链接至远程仓库，此处origin是别名
+21. git push -u origin master  --> 推送至远程仓库
+22. git push -u origin <分支名> --> 推送其他分支，-u可省略
+23. git clone <url>  --> 复制代码，包含分支，不一定显示，可直接切换，第一次用clon
+24. git pull origin <分支名> --> 更新代码，clone之后用pull来更新代码
++ git pull =  git fetch + git merge
++ git fetch origin --> 将远程代码拉取到本地的版本库
++ git merge origin/<分支名> --> 合并代码，因为是远程拉取的，所有有前缀origin/
+25. 
 
 
 
