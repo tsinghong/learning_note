@@ -2804,14 +2804,175 @@ g.send(['一根骨头','aaa'])  # 不能传两个值，但是可以传列表，�
 
 并发编程用的多  
 
-### 递归
+### 递归\\TODO
+
+函数的递归调用：是函数嵌套调用的一种特殊形式   
+具体是指：在调用一个函数的过程中又直接或者间接地调用到本身   
+
+函数递归容易导致死循环，在其他语言中会无限申请内存导致内存泄漏   
+在python中，递归调用的默认次数是1000次   
+
+如何查看python的递归默认层级？
+在交互式环境中打开Python
+`import sys`
+`sys.getrecursionlimit()`
+设置递归层级
+`sys.setrecursionlimit(2000)`
+`sys.getrecursionlimit()`
+虽然可以设置，但是不应该设置   
+
+本质上，函数递归就是一个循环 --> 可以递归的肯定能循环
+所以，现在一段代码的循环运行方案有两种:递归和循环     
+
+如何结束递归调用？     
+```
+def func1(n):
+    if n == 10:
+        return
+    n += 1
+    print(n)
+    func1(n)
+func1(0)
+```
+
+**递归的两个阶段**
+1. 回溯:一层一层调用
+2. 递推:满足结束条件，从后往前依次结束调用的函数
+
+#### 算法入门：二分法
+
+算法-->高效解决问题的方法    
+
+**二分法**    
+应用场景：在一个顺序排列的纯数字列表中查找数字       
+    
+常规做法      
+伪代码：从一个列表中查找某个数x     
+列表1     
+for循环遍历列表    
+与要查找的数字进行对比
+找到后停止循环,break      
+找到后打印该数     
+
+如果列表中有大量值，效率极低     
+
+二分法是先找到这个列表的中间值，然后比较，决定查找放向，向左或向右    
+一半一半的减少查找量
+
+伪代码：二分法
+```
+def 查找函数(要查找值,列表):
+    中值=列表中间的值
+    if 要查找值 > 中值:
+        # 接下来的查找应该是在列表的右半部分
+        列表=列表切片右半部分
+        查找函数(要查找值,列表)
+    elif 要查找值 < 中值:
+        # 接下来的查找应该是在列表的左半部分
+        列表=列表切片左半部分
+        查找函数(要查找值,列表)
+    else:
+        print('找到了!')
+```
+
+案例
+```
+nums=[-3,4,7,10,13,21,43,77,89]
+find_num=10
+def binary_search(find_num,l):
+    print(l)
+    if len(l) == 0:
+        print('找的值不存在')
+        return
+    mid_index=len(l) // 2
+
+    if find_num > l[mid_index]:
+        # 接下来的查找应该是在列表的右半部分
+        l=l[mid_index+1:]
+        binary_search(find_num,l)
+    elif find_num < l[mid_index]:
+        # 接下来的查找应该是在列表的左半部分
+        l=l[:mid_index]
+        binary_search(find_num,l)
+    else:
+        print('find it')
+
+binary_search(find_num,nums)
+```
+
+### 函数式编程
+
+将计算机的运算视为数学意义上的运算，注重执行结果而非执行过程    
+可读性较差   
+
+#### 匿名函数与lambda
+
+匿名函数不能用def来定义
+`lambda [参数列表] : [表达式]`
+lambda是在定义函数，而不是运行函数
+
+对比：
+```
+def func1():   # 有名函数
+    pass
+print(func1)
+
+print(lambda x, y : x + y)
+```
+通常匿名函数不会有打印之类的操作，都是直接放表达式    
+
+如何调用？    
+`(lambda x, y : x + y)(参数1， 参数2)`
+`res = (lambda x, y : x + y)(参数1， 参数2)`
+拿到返回值
+`func = (lambda x, y : x + y)(参数1， 参数2)`
+`func(参数1, 参数2)`
+不要这么做，给匿名函数赋一个名字没有意义     
+
+匿名函数用于临时调用一次的场景：更多的是与其他函数配合使用
+
+**max(),min(),sorted()函数**    
+max接收两个参数，一个是可迭代对象，一个是key即比较依据    
+```
+salaries = {
+    'siry':3000,
+    'tom':7000,
+    'lili':10000,
+    'jack':2000
+}
+# 找出value最大的key
+# max(salaries)字典默认的取值是key
+def func(k):
+    return salaries[k]
+
+res = max(salaries, key=func) # key后面的函数不加括号，key这个参数会自动调用
+print(res)
+
+# 函数func的用途只有一次，可以用匿名函数
+res = max(salaries, key=lambda name: salaries[name])
+print(res)
+res = min(salaries, key=lambda name: salaries[name])
+print(res)
+```
 
 
 
 
 
 
-### 匿名函数
+map
+filter
+reduce
+
+
+
+### 内置函数 --> 死记硬背
+
+
+
+
+
+
 
 ## 表达式与生成式
 
@@ -2826,22 +2987,26 @@ g.send(['一根骨头','aaa'])  # 不能传两个值，但是可以传列表，�
 `res = x if x < y else y`
 `print(res)`
 
+***各种生成器主要针对的是容器类型***
 **列表生成式**
 
 用列表生成式的目的就是精简代码  
 
 语法格式：表达式 for item1 in iterable1 if condition1  
 可以多层嵌套：
+```
 [表达式 for item1 in iterable1 if condition1
 for item2 in iterable2 if condition2
 ...
 for itemN in iterableN if conditionN]
+```
 
 最简单的形式：[expression for item in iterable] --> if判断省略，类似与if True永远真  
-如果嵌套过多就没有任何意义
+如果嵌套过多就没有任何意义  
 
 **字典生成器**
 
+用一行代码快速生成一个字典  
 ```
 keys=['name','age','gender']
 dic={key:None for key in keys}  # ->给列表一个空value
@@ -2860,16 +3025,37 @@ set1={key for key in keys}   # 第一个key就是填入集合的值，第二个k
 print(set1,type(set1))
 ```
 
-**生成器表达式**
+**生成器表达式**     
+因为元组是不可更改的，所以不存在元组生成器  
+
+`g = (i for i in range(10) if i > 3)`
+`print(g, type(g))`
+
+案例：统计某文件的字符数  
+```
+with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
+    # 基本方法
+    # res = 0
+    # for line in f:
+    #     res += len(line)
+    # print(res)
+
+    # 列表生成器方法 -->如果文件行数过多，内存依然会被占满
+    # res = sum([len(line) for line in f])  
+    # print(res)
+
+    # 高效法： -->不用列表，用的生成器
+    # res = sum((len(line) for line in f))
+    res = sum(len(line) for line in f) # -->可以简写
+    print(res)
+```
 
 
 
 
+## 模块与包
 
-
-
-## 包的使用
-
+自定义模块，
 
 
 ### 常用模块的使用方法
@@ -2880,7 +3066,22 @@ time.time()   # 结果是秒，是1970年1月1日0时0分(unix元年，诞生的
 
 
 
+## 面向过程的编程思想
 
+编程思想/范式   
+
+面向过程的编程思想：    
+核心是"过程"二字，过程即流程，指的是做事的步骤：先什么、再什么、后干什么    
+基于该思想编写程序就好比在设计一条流水线    
+
+优点：复杂的问题流程化、进而简单化    
+缺点：扩展性非常差     
+
+依据计算机的工作原理，编程最本质的思想就是面向过程的，其他思想如函数式，面向对象都是基于面向过程的一次次封装。    
+
+面向过程的编程思想应用场景解析：   
+1. 不是所有的软件都需要频繁更迭：比如编写脚本
+2. 即便是一个软件需要频繁更迭，也不并不代表这个软件所有的组成部分都需要一起更迭
 
 ## 软件开发的目录规范
 
