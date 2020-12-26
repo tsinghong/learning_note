@@ -2953,18 +2953,61 @@ res = max(salaries, key=lambda name: salaries[name])
 print(res)
 res = min(salaries, key=lambda name: salaries[name])
 print(res)
+
+res = sorted(salaries, key=lamda k:salaries[k])
+# sorted默认是key排序
+print(res)
+
+# sorted函数还有一个参数是reverse,可以设置为reverse=True，即降序排列
+
 ```
 
+**map函数**      
+map -->  映射函数
 
+```
+l = ['alex', 'lxx', 'wxx', 'xxq]
+# new_l = [name+'dsb' for name in l]  # 列表生成式
+# new_l = (name+'dsb' for name in l)  # 生成器  --> 推荐使用
+print(new_l)
 
+# map函数接受两个参数，map(映射规则，可迭代对象)
+res = map(lambda name:name+'_dsb', l)   
+print(res)  # 可以发现res是一个生成器，可以调用res的.__iter__()和.__next__()
+```
 
+**filter函数**        
+过滤器函数     
 
+```
+l = ['alex_dsb', 'lxx_dsb', 'wxx', 'xxq]
+# 要把有dsb的过滤出来
+# res = (name for name in l if name.endwith('dsb'))  # 生成器  --> 推荐使用
+print(res)
 
-map
-filter
-reduce
+# filter方法
+# filter函数接受两个参数，filter(过滤规则，可迭代对象)
+# filer会依次取出并判断可迭代对象的每一个值
+# 留下结果为True的值
+res = filter(lambda name:name.endwith('dsb'), l)   
+print(res)  # 可以发现res是一个生成器，可以调用res的.__iter__()和.__next__()
+```
 
+**reduce**
+在python3中，reduce已经不再是内置函数了，需要导入functools包才能使用    
+```
+from functools import reduce
+res = reduce(lambda x, y:x+y, [11, 22, 33], 10) # 一个合并操作
+print(res)
+# 最后的10是指定的初始值，也可以不写，默认0
+# reduce会取出列表中第一个值，与10相加，得到21
+# 然后取出第二个值，与21相加，得到43
+# 最后取出第三个值，与43相加，得到76
 
+# 可以用作字符串的拼接
+res = reduce(lambda x, y:x+y, ['a', 'b', 'c'])
+print(res) 
+```
 
 ### 内置函数 --> 死记硬背
 
@@ -3055,7 +3098,11 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 
 ## 模块与包
 
-自定义模块，
+模块是一系列功能的集合体   
+
+1. 内置模块 --> 大多是c/c++写的
+2. 第三方模块  --> 其他人写的
+3. 自定义的模块--> 可以是python写的，也可以是c/c++写的
 
 
 ### 常用模块的使用方法

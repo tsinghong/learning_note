@@ -92,5 +92,8 @@
 # print(lambda x, y : x + y)
 
 
+from functools import reduce
+res = reduce(lambda x, y:x+y, [1, 2, 3], 10)
+print(res)
 
 
