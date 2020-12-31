@@ -1399,19 +1399,19 @@ with open('user.txt',mode='rt',encoding='utf-8') as f:
 在以w模式打开文件没有关闭的情况下，连续写入，新的内容总是跟在旧的之后
 ```
 with open('d.txt',mode='wt',encoding='utf-8') as f:
-    f.write('擦勒1\n')
-    f.write('擦勒2\n')
-    f.write('擦勒3\n')
+    f.write('这是一句话\n')
+    f.write('这是另一句话\n')
+    f.write('这还是一句话\n')
 ```
 
 如果重新以w模式打开文件，则会清空文件内容
 ```
 with open('d.txt',mode='wt',encoding='utf-8') as f:
-    f.write('擦勒1\n')
+    f.write('这是一句话\n')
 with open('d.txt',mode='wt',encoding='utf-8') as f:
-    f.write('擦勒2\n')
+    f.write('这是另一句话\n')
 with open('d.txt',mode='wt',encoding='utf-8') as f:
-    f.write('擦勒3\n')
+    f.write('这还是一句话\n')
 ```
 
 案例：文件复制程序：
@@ -3096,14 +3096,179 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 
 
 
-## 模块与包
+## 模块
 
 模块是一系列功能的集合体   
+
+注意：模块文件的用途是存放功能，而不是用来运行    
+
+模块和函数一样都是第一类对象（一等公民），即可以当返回值，被赋值给变量，当容器类型的元素    
 
 1. 内置模块 --> 大多是c/c++写的
 2. 第三方模块  --> 其他人写的
 3. 自定义的模块--> 可以是python写的，也可以是c/c++写的
 
+一个python文件本身就一个模块，文件名m.py，模块名叫m      
+
+模块有四种形式
+1. 使用python编写的.py文件 
+2. 已被编译为共享库或DLL的C或C++扩展 
+3. 把一系列模块组织到一起的文件夹（注：文件夹下有一个__init__.py文件，该文件夹称之为包）
+4. 使用C编写并链接到python解释器的内置模块
+
+**模块的作用**
+1. 内置与第三的模块拿来就用，无需定义，这种拿来主义，可以极大地提升自己的开发效率
+2. 自定义的模块：可以将程序的各部分功能提取出来放到一模块中为大家共享使用，减少了代码冗余，程序组织结构更加清晰
+
+### 模块的导入
+
+新建一个py文件，名为mol_1.py    
+新建一个主文件，名为run.py      
+
+在run.py文件中将mol_1.py作为模块导入    
+`import mol_1`
+注意：导入模块是不要加后缀名.py
+
+**导入后发生的三件事**    
+
+1. 执行mol_1.py
+2. 产生mol_1.py的名称空间，将mol_1.py运行过程中产生的名字都丢到mol_1的名称空间中
+3. 在当前文件中产生一个与模块名字相同的变量名mol_1，并指向2中产生的名称空间
+
+之后的导入，都是直接引用首次导入产生的foo.py名称空间,不会重复执行代码
+`import mol_1`
+`import mol_1`  # 此次不执行，只执行上一次的导入
+
+三件事的解释 --> 使用import后，在run.py文件中定义了模块的名字，这个名字指向了模块文件，模块就开始运行，并且产生了模块的名称空间，这个名称空间存储的都是模块内的名字，包括函数，变量等等     
+注意：当run.py运行结束后，run.py占用的内存被回收，此时模块文件的引用也消失了，即模块的名称空间在run.py运行结束之后被回收。     
+
+    # mol_1.py
+    print("This is a module")
+    x = 111
+    y = 222
+    z = 333
+    def func1():
+        pass
+    def func2():
+        pass
+    def func3():
+        pass
+
+    # run.py
+    import mol_1
+
+运行run.py会发现运行了mol_1.py文件     
+
+**引用模块内容**    
+1. 指名道姓要内容     
+在run.py中使用模块名+.+引用内容即可   
+    # run.py
+    import mol_1
+    mol_1.x         # 引用变量
+    mol_1.func1()   # 引用函数
+以上指名道姓的要内容不会与当前的文件的内容发生任何冲突     
+
+注意：无论是查看还是修改，操作的都是原模块文件的内容，与调用位置无关
++ 这一点参看作用域相关内容
++ 一个名字指向一个内存地址，run.py中的mol_1.x这个名字指向mol_1.py文件中的x地址
++ 同理，run.py中的mol_1.func1()这个名字指向mol_1.py文件中的func1的地址
+
+2. 多模块导入    
++ 写多个import语句
+    import time
+    import mol_1
+    import mol_2
++ 以逗号为分隔符，写多个模块名（显得不清晰，不建议）
+    import time, mol_1, mol_2
+
+导入顺序的规范：内置--> 第三方 --> 自定义
+    import time  # 内置模块
+    import os    # 内置模块
+
+    import pygame# 第三方模块
+
+    import mol_1 # 自定义模块
+
+3. 导入并起别名    
+适用与模块名太长的模块       
+语法：import x as y
+`import time as t`
+`t.sleep(3)`
+
+4. 可以在函数内导入模块
+    def func1():
+        import time
+        pass
+
+**模块测试**
+
+python文件的两种用途：
+1. 被当作程序执行
+2. 被当作模块来导入
+
+测试模块时可能会需要运行这个模块的文件，虽然一个模块文件不应当被执行   
+
+    # mol_1.py
+    # 测试
+    print("This is a module")
+    x = 111
+    y = 222
+    z = 333
+    def func1():
+        pass
+    def func2():
+        pass
+    def func3():
+        pass
+    func1()
+    func2()
+此时，用到py文件的一个内置属性__name__   
+__name__有两个属性：1、'__main__', 2、文件名    
+当这个文件被执行的时候__name__ == '__main__'     
+当这个文件被导入的时候__name__ == 文件名     
+
+所以，测试代码更改如下：
+
+    # mol_1.py
+    # 测试
+    print("This is a module")
+    x = 111
+    y = 222
+    z = 333
+    def func1():
+        pass
+    def func2():
+        pass
+    def func3():
+        pass
+    if __name__ == '__main__':
+       func1()
+       func2()
+小技巧：输入main之后，vscode可以自动补全if判断代码
+
+**导入的另一种形式：from .. import ..**         
+from ... import ...可以加as来表示别名             
+该导入方式不加前缀，但是会导致名称空间的冲突        
+      
+用from导入发生的3件事：
+1. 产一个模块的名称空间
+2. 运行mol_1.py将运行过程中产生的名字都丢到模块的名称空间去
+3. 在当前名称空间拿到一个名字，该名字与模块名称空间中的某一个内存地址相对应
+
+`from mol_1 import func1`
+`print(mol_1)`
+注意：当前名称空间没有mol_1这个名字，但是有func1这个名字
+
+    # run.py
+    from mol_1 import x
+    from mol_1 import func1
+    from mol_1 import func2
+
+       
+### 包
+
+
+自定义模块的命名应当使用纯小写+下划线的风格
 
 ### 常用模块的使用方法
 
