@@ -96,6 +96,19 @@
 # res = reduce(lambda x, y:x+y, [1, 2, 3], 10)
 # print(res)
 
-from mol_1 import func1
-print(func1)
-print(mol_1)
+# from mol_1 import func1
+# print(func1)
+# print(mol_1)
+
+# import sys
+# print(sys.path)
+# print(sys.modules)
+
+
+def func(a: int, b: int) -> int:
+    c = a + b
+    return c
+
+# res = func(1, 2)
+# print(res)
+print(func.__annotations__)
