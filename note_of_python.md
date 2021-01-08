@@ -3425,14 +3425,212 @@ if __name__ == '__main__': # 测试程序
       
 自己开发包的场景：1、项目很大，有很多通用的功能；2、自己为行业写一个功能
 
+*注意：绝对导入参照的是sys.path，相对导入是当前文件位置*
 
 ### 常用模块的使用方法
 
-time模块
-time.sleep(3) # 休眠3秒
-time.time()   # 结果是秒，是1970年1月1日0时0分(unix元年，诞生的年份)到当前时间的秒数  
+#### time模块
+
+三种格式：
+1. 时间戳：1970年到现在的秒数
+`import time`
+`print(time.time())`
+time.time() # 结果是秒，是1970年1月1日0时0分(unix元年，诞生的年份)到当前时间的秒数  
+返回值是float型    
+用于时间间隔的计算    
+
+2. 格式化的字符串格式：
+`import time`
+`print(time.strftime('%Y-%m-%d %H:%M:%S %p'))`
+`print(time.strftime('%Y-%m-%d %X'))`
+其他格式：
++ %a    Locale’s abbreviated weekday name.     
++ %A    Locale’s full weekday name.     
++ %b    Locale’s abbreviated month name.     
++ %B    Locale’s full month name.     
++ %c    Locale’s appropriate date and time representation.     
++ %d    Day of the month as a decimal number [01,31].     
++ %H    Hour (24-hour clock) as a decimal number [00,23].     
++ %I    Hour (12-hour clock) as a decimal number [01,12].     
++ %j    Day of the year as a decimal number [001,366].     
++ %m    Month as a decimal number [01,12].     
++ %M    Minute as a decimal number [00,59].     
++ %p    Locale’s equivalent of either AM or PM.    (1)
++ %S    Second as a decimal number [00,61].    (2)
++ %U    Week number of the year (Sunday as the first day of the week) as a decimal number [00,53]. All days in a new year preceding the first Sunday are considered to be in week 0.    (3)
++ %w    Weekday as a decimal number [0(Sunday),6].     
++ %W    Week number of the year (Monday as the first day of the week) as a decimal number [00,53]. All days in a new year preceding the first Monday are considered to be in week 0.    (3)
++ %x    Locale’s appropriate date representation.     
++ %X    Locale’s appropriate time representation.     
++ %y    Year without century as a decimal number [00,99].     
++ %Y    Year with century as a decimal number.     
++ %z    Time zone offset indicating a positive or negative time difference from UTC/GMT of the form +HHMM or -HHMM, where H represents decimal hour digits and M represents decimal minute digits [-23:59, +23:59].     
++ %Z    Time zone name (no characters if no time zone exists).  
+
+返回值是str型        
+主要用于展示         
+       
+3. 结构化时间：
+
+    import time
+    res = time.localtime() # -> 北京时间
+    res1 = time.gmtime()   # -> 世界标准时间，格林尼治时间
+    print(res)
+
+tm_year=2021  -> 年
+tm_mon=1      -> 月 
+tm_mday=6     -> 日
+tm_hour=15    -> 时
+tm_min=53     -> 分 
+tm_sec=48     -> 秒
+tm_wday=2     -> 一年中的第几周
+tm_yday=6     -> 一年中的第几天
+tm_isdst=0    -> 是否夏令时，0表示否
+    
+以上可以单独取出
+`print(res.tm_year)`
+`print(res.tm_sec)`
+
+获取当前时间的某一部分       
 
 
+**三种格式时间的转换**
+
+```
+格式化时间----------->结构化时间---------->时间戳
+         strptime()            mktime()
+             
+格式化时间<-----------结构化时间<----------时间戳
+         strftime()            localtime()/gmtime()
+
+时间戳与格式化时间之间不可转换
+```
+注意：localtime()/gmtime()接收的参数单位是秒         
+
+现有一个时间：2020-01-01 11:11:11，而且是字符串格式需要转换成结构化的时间
+`print(time.strptime('2020-01-01 11:11:11', '%Y-%m-%d %H:%M:%S'))`
+      
+应用场景：VIP充值     
+用户A于2020-01-01 11:11:11充值VIP，充值30天      
+需要把这个时间与数字30相加，然后写回VIP内的到期时间     
+```
+# 第一步：格式化这个字符串使其成为结构化时间
+orgin_time = time.strptime('2020-01-01 11:11:11', '%Y-%m-%d %H:%M:%S')
+
+# 第二步：把得到的时间转换成时间戳（即秒数）
+stamp_time = time.mktime(orgin_time)
+
+# 第三步：时间戳进行加法运算
+res_time = stamp_time + 30*86400
+
+# 第四步：显示30日后的时间，即格式化的时间
+back_flow1 = time.localtime(res_time) # --> 结构化时间
+final_res = tiem.strftime('%Y-%m-%d %H:%M:%S', back_flow1) # --> 格式化时间
+```
+
+**其他**
+
+time.sleep(3) # 休眠3秒，接受的参数为秒，爬虫用的多
+time.asctime() # 当前格式化时间，该格式linux系统使用
+
+#### datetime模块
+
+`import datetime`
+`print(datetime.datetime.now())` # -> 一次获取到格式化的时间
+`print(datetime.datetime.utcnow())` # -> 世界标准时间的格式化时间
+
+time模块只有time.time()的返回值可以参与运算，而且单位是秒，相当麻烦     
+如果要求三天后的时间，如何操作？
+`print(datetime.datetime.now() + datetime.timedelta(days=3))`
+datetime.timedelta()接收的参数可以有days,seconds,hours,microseconds等等   
+可以是负数，即往前数多长时间    
+
+`print(datetime.datetime.fromtimestamp(86400))`
+fromtimestamp方法自动生成格式化时间，但是方式不可改    
+用time模块的话就可以自定义年月日的位置等等     
+
+#### random模块
+
+随机取值，基本用法：
+`import random`
+`print(random.random())` # .random方法随机产生0与1之间的浮点数，不需要参数       
+`print(random.randint(1, 3))` # [1, 3]，1<= 随机整数 <=3，注意有等号
+`print(random.randrange(1, 3))` # [1, 3), 1<= 随机整数 <3，后面无等号
+`print(random.choice([1, 'a', [1, 2, 3]]))` # 随机取列表一个元素
+`print(random.sample([1, 'a', 'b', 2,[1, 2, 3]], 3))` # 随机取自定义个元素，例如3，返回值是一个列表
+`print(random.uniform(1, 3))` # (1, 3) 1<随机小数<3，高精度小数
+
+```
+list1 = [1, 2, 3, 4, 5]
+random.shuffle(list1)  # 打乱顺序，洗牌功能
+print(item)
+```
+
+应用：随机验证码
+要用到一个函数，chr()把一个十进制数字转换成字符，即这个字符的ASCII编码   
+ord()函数则把ASCII字符转换成十进制数
+chr(65) --> 'A'
+chr(66) --> 'B'
+chr(90) --> 'Z'
+```
+import random
+
+res = ''
+for i in range(6):
+    chr_1 = chr(random.randint(65, 90))
+    chr_2 = str(random.randint(0,9))
+    res += random.choice([chr_1, chr_2])
+print(res)
+
+升级版
+import random
+
+def make_code(size=4):
+    res = ''
+    for i in range(size):
+        chr_1 = chr(random.randint(65, 90))
+        chr_2 = str(random.randint(0, 9))
+        res += random.choice([chr_1, chr_2])
+    return res
+print(make_code(6))
+```
+
+#### os模块
+
+`import os`
+
+1. os.getcwd() (常用)获取当前工作目录，即当前python脚本工作的目录路径
+2. os.chdir("dirname")  改变当前脚本工作目录；相当于shell下cd
+3. os.curdir  返回当前目录: ('.')
+4. os.pardir  获取当前目录的父目录字符串名：('..')
+5. os.makedirs('dirname1/dirname2')    可生成多层递归目录
+6. os.removedirs('dirname1')    若目录为空，则删除，并递归到上一级目录，如若也为空，则删除，依此类推
+7. os.mkdir('dirname')    生成单级目录；相当于shell中mkdir dirname
+8. os.rmdir('dirname')    删除单级空目录，若目录不为空则无法删除，报错；相当于shell中rmdir dirname
+9. os.listdir('dirname')   (常用) 列出指定目录下的所有文件和子目录，包括隐藏文件，并以列表方式打印
+10. os.remove()  (常用)删除一个文件
+11. os.rename("oldname","newname")  (常用)重命名文件/目录
+12. os.stat('path/filename')  获取文件/目录信息
+13. os.sep    输出操作系统特定的路径分隔符，win下为"\\",Linux下为"/"
+14. os.linesep    输出当前平台使用的行终止符，win下为"\t\n",Linux下为"\n"
+15. os.pathsep    输出用于分割文件路径的字符串 win下为;,Linux下为:
+16. os.name    输出字符串指示当前使用平台。win->'nt'; Linux->'posix'
+17. os.system("bash command")  (常用)运行shell命令，直接显示
+18. os.environ  (常用)获取系统环境变量，都是key-value的格式，而且key与value必须都是字符串；可以往里面加东西os.environ['aaaa'] = '11111'
+19. os.path.abspath(path)  返回path规范化的绝对路径
+20. os.path.split(path)  将path分割成目录和文件名二元组返回，即一个元素是文件夹，一个元素是文件名
+21. os.path.dirname(path)  返回path的目录。其实就是os.path.split(path)的第一个元素
+22. os.path.basename(path)  返回path最后的文件名。如何path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素
+23. os.path.exists(path)  如果path存在，返回True；如果path不存在，返回False
+24. os.path.isabs(path)  如果path是绝对路径，返回True
+25. os.path.isfile(path)  如果path是一个存在的文件，返回True。否则返回False
+26. os.path.isdir(path)  如果path是一个存在的目录，则返回True。否则返回False
+27. os.path.join(path1[, path2[, ...]])  将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
+28. os.path.getatime(path)  返回path所指向的文件或者目录的最后存取时间
+29. os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间
+30. os.path.getsize(path)  返回path的大小，查看文件或文件夹的大小，单位字节
+31. os.path.normcase(path) 在Linux和Mac平台上，该函数会原样返回path，在windows平台上会将路径中所有字符转换为小写，并将所有斜杠转换为饭斜杠。
+32. os.path.normpath(path) 规范化路径
 
 ## 面向过程的编程思想
 
@@ -3460,25 +3658,60 @@ time.time()   # 结果是秒，是1970年1月1日0时0分(unix元年，诞生的
 3. db：对数据库进行操作，例如db_handle.py用于读写数据库
 4. lib：存放各程序共用的功能，模块、包等均可放入，例如common.py
 5. core：存放核心代码的逻辑，例如src.py，start.py只负责启动
-6. api:各种接口文件
+6. api:各种接口文件，提供数据操作
 还需要有以下文件：   
 1. setup.py用于安装
 2. requirement.txt用于列出所需库
 3. READM.MD该项目的说明文件，例如如何使用，软件结构，官网地址等等 
+4. run.py程序启动文件的另一个位置，程序的执行时所在文件夹默认为sys.path的第一路径，省去处理环境变量的麻烦
+5. LICENSE.txt 开源项目的许可文件，可以有GPL,MIT等等
+6. ChangeLog.txt 更新日志
           
 注意：被执行的文件，例如bin/start.py，它的主目录是bin，也就是说，可执行文件的所在的目录被其视为主目录，是无法使用相对导入的
               
-   /# start.py
+### 各目录之间的导入问题
+
+python可以直接导入文件夹，但是相对导入不能跳出执行文件所在文件夹   
+    
+因此，只能使用绝对路径
+
+   /# /bin/start.py
    import sys
-   sys.path.append(r'')
+   sys.path.append(r'xx/x/xx/')
 
    import src
    src.run()
 
+这样会把添加的环境变量写死，而且如果项目文件夹多，不利于导入       
+        
+应该把项目文件夹加入环境变量中   
+`sys.path.append(r'项目文件夹路径')`
+这样，即使文件夹内的其他文件之间的调用也可以直接从项目文件夹开始找     
+     
+如何把项目文件夹的路径也写活？   
+`print(__file__)`
+这里的__file__变量存储的是当前文件的绝对路径        
+        
+    import os
+    print(__file__)
+    print(os.path.dirname(__file__))
+    print(os.path.dirname(os.path.dirname(__file__)))
 
+os.path.dirname()获取传入参数的上一层文件夹      
+    
+python3.5之前用这个，兼容python2，3.5以后提供了pathlib包，更方便      
+      
+执行文件一般都加上以下语句：
+`if __name__ == '__main__':`
+`   run()`
 
+### 一些其他规范
 
-
+配置文件中的变量一般都用大写，文件路径配置应当放入settings.py中               
+ 
+其他文件不要导入执行文件，即start.py或者run.py    
+   
+共用的功能记得放入common文件夹
 
 
 

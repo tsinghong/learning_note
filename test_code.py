@@ -105,10 +105,31 @@
 # print(sys.modules)
 
 
-def func(a: int, b: int) -> int:
-    c = a + b
-    return c
+# def func(a: int, b: int) -> int:
+#     c = a + b
+#     return c
 
 # res = func(1, 2)
 # print(res)
-print(func.__annotations__)
+# print(func.__annotations__)
+
+# import sys
+# print(__file__)
+
+
+# import time
+# print(time.strftime('%Y-%m-%d %H:%M:%S %p'))
+# print(time.strftime('%Y-%m-%d %X'))
+# print(time.localtime())
+# print(time.gmtime())
+
+# import random
+# print(random.random())
+# print(random.sample([1, 'a', 'b', 2,[1, 2, 3]], 3))
+
+import os
+# print(os.listdir('.'))
+print(os.getcwd())
+
+
+
