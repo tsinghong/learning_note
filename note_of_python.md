@@ -3532,6 +3532,77 @@ final_res = tiem.strftime('%Y-%m-%d %H:%M:%S', back_flow1) # --> 格式化时间
 
 time.sleep(3) # 休眠3秒，接受的参数为秒，爬虫用的多
 time.asctime() # 当前格式化时间，该格式linux系统使用
+time.perf_counter() # 计算性能，返回浮点数，用于计数，需要调用两次算差值
+time.perf_counter_ns() # 精确到纳秒
+time.process_time() # 返回当前进程的系统和用户CPU时间总和的值（以小数秒为单位）作为浮点数，也要用差值 --> 不计算time.sleep()的时间
+
+##### 打印进度条
+
+基本进度条：   
+   import time
+   res = ''
+   for i in range(50):
+       res += '#'
+       time.sleep(0.5)
+       print('\r[%-50s]' % res, end='')
+   print()
+
+下载进度条：依据下载的量与总量的百分比控制'#'的数量    
+伪代码
+   接收数据 = num_rec
+   总数据 = num_tot
+   while num_rec < num_tot:
+        time.sleep(0.3) # 模拟网速
+        num_rec += 每次接收的数据大小（例如1024字节）
+        # print(num_rec)  # 打印了累计的下载量，此处改成进度条格式
+        # print('\r[%-50s]' % res, end='') # 井号的个数应当由百分比确定
+        百分比 = num_rec / num_tot
+        res = int(百分比 * 50) * '#'
+        print('\r[%-50s]' % res, end='')
+    print() # 打印一个空行
+
+    num_rec = 0
+    num_tot = 100000
+    while num_rec < num_tot:
+        time.sleep(0.1):
+        num_rec += 1024
+        percentage = num_rec / num_tot
+        res = int (50 * percentage) * '#'
+        # print('\r[%-50s]' % res, end='')
+        print('\r[%-50s] %d%%' % (res, int(100*percentage)), end='') # 更进一步，在最后显示百分比
+    print()
+以上，当总数据量为1025时，百分比大于了1        
+两种解决方案：
+1. 判断剩余数据是否大于每次接收的数据，如果大于了，则表示下载完毕
+2. 判断百分比是否大于1，如果大于了1，则percentage = 1
+
+带时间的进度条:
+   import time 
+   scale = 50
+   print("执行开始，祈祷不报错".center(scale // 2, "-"))
+   start = time.perf_counter()
+   for i in range(scale + 1):
+       a = "*" * i
+       b = "." * (scale - i)
+       c = (i / scale) * 100
+       dur = time.perf_counter() - start
+       print("\r{:^3.0f}%[{}->{}]{:.2f}s".format(c, a, b, dur), end="")
+       time.sleep(0.1)
+   print("\n"+"执行结束，万幸".center(scale // 2, "-"))
+
+tpdm进度条模块：      
+通过pip在终端下载该模块，tpdm       
+    from time import sleep
+    from tqdm import tqdm
+    # 这里同样的，tqdm就是这个进度条最常用的一个方法
+    # 里面存一个可迭代对象
+    for i in tqdm(range(1, 500)):
+       # 模拟你的任务
+       sleep(0.01)
+    sleep(0.5)
+
+还有一些其他的进度条库：alive_progress, progress, PySimpleGUI(可视化进度条)
+
 
 #### datetime模块
 
@@ -3597,8 +3668,10 @@ print(make_code(6))
 
 #### os模块
 
+该模块主要提供一种调用操作系统函数的方法        
 `import os`
 
++ 文件操作类(查，增，改，删)
 1. os.getcwd() (常用)获取当前工作目录，即当前python脚本工作的目录路径
 2. os.chdir("dirname")  改变当前脚本工作目录；相当于shell下cd
 3. os.curdir  返回当前目录: ('.')
@@ -3611,26 +3684,232 @@ print(make_code(6))
 10. os.remove()  (常用)删除一个文件
 11. os.rename("oldname","newname")  (常用)重命名文件/目录
 12. os.stat('path/filename')  获取文件/目录信息
-13. os.sep    输出操作系统特定的路径分隔符，win下为"\\",Linux下为"/"
-14. os.linesep    输出当前平台使用的行终止符，win下为"\t\n",Linux下为"\n"
-15. os.pathsep    输出用于分割文件路径的字符串 win下为;,Linux下为:
-16. os.name    输出字符串指示当前使用平台。win->'nt'; Linux->'posix'
-17. os.system("bash command")  (常用)运行shell命令，直接显示
-18. os.environ  (常用)获取系统环境变量，都是key-value的格式，而且key与value必须都是字符串；可以往里面加东西os.environ['aaaa'] = '11111'
-19. os.path.abspath(path)  返回path规范化的绝对路径
-20. os.path.split(path)  将path分割成目录和文件名二元组返回，即一个元素是文件夹，一个元素是文件名
-21. os.path.dirname(path)  返回path的目录。其实就是os.path.split(path)的第一个元素
-22. os.path.basename(path)  返回path最后的文件名。如何path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素
-23. os.path.exists(path)  如果path存在，返回True；如果path不存在，返回False
-24. os.path.isabs(path)  如果path是绝对路径，返回True
-25. os.path.isfile(path)  如果path是一个存在的文件，返回True。否则返回False
-26. os.path.isdir(path)  如果path是一个存在的目录，则返回True。否则返回False
-27. os.path.join(path1[, path2[, ...]])  将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
-28. os.path.getatime(path)  返回path所指向的文件或者目录的最后存取时间
-29. os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间
-30. os.path.getsize(path)  返回path的大小，查看文件或文件夹的大小，单位字节
-31. os.path.normcase(path) 在Linux和Mac平台上，该函数会原样返回path，在windows平台上会将路径中所有字符转换为小写，并将所有斜杠转换为饭斜杠。
-32. os.path.normpath(path) 规范化路径
+13. os.chomd()  改变目录权限
+14. os.walk()  生成目录树下的所有文件名（返回值是一个生成器）
+
++ 系统类
+1.  os.environ  (常用)获取系统环境变量，都是key-value的格式，而且key与value必须都是字符串；可以往里面加东西os.environ['aaaa'] = '11111'
+2.  os.system("bash command")  (常用)运行shell命令，直接显示
+3.  os.sep    输出操作系统特定的路径分隔符，win下为"\\",Linux下为"/"
+4.  os.linesep    输出当前平台使用的行终止符，win下为"\t\n",Linux下为"\n"
+5.  os.pathsep    输出用于分割文件路径的字符串 win下为;,Linux下为:
+6.  os.name    输出字符串指示当前使用平台。win->'nt'; Linux->'posix'
+          
++ 路径类(python3.5之后有pathlib模块专门处理路径)
+1.  os.path.abspath(path)  返回path规范化的绝对路径
+2.  os.path.split(path)  将path分割成目录和文件名二元组返回，即一个元素是文件夹，一个元素是文件名
+3.  os.path.dirname(path)  (重要)去掉文件名，返回目录路径。其实就是os.path.split(path)的第一个元素
+4.  os.path.basename(path)  去掉目录路径，返回文件名。如果path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素
+5.  os.path.exists(path)  如果path存在，返回True；如果path不存在，返回False
+6.  os.path.isabs(path)  如果path是绝对路径，返回True
+7.  os.path.isfile(path)  如果path是一个存在的文件，返回True。否则返回False
+8.  os.path.isdir(path)  如果path是一个存在的目录，则返回True。否则返回False
+9.  os.path.join(path1[, path2[, ...]])  将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
+10. os.path.getatime(path)  返回path所指向的文件或者目录的最后存取时间
+11. os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间
+12. os.path.getsize(path)  返回path的大小，查看文件或文件夹的大小，单位字节
+13. os.path.normcase(path) 在Linux和Mac平台上，该函数会原样返回path，在windows平台上会将路径中所有字符转换为小写，并将所有斜杠转换为饭斜杠。
+14. os.path.normpath(path) 规范化路径，主要针对windows平台
+
+##### pathlib模块//TODO
+
+    from pathlib import Path
+
+    # 找上上级目录
+    root = Path(__file__)
+    res = root.parent.parent 
+    print(res)
+    # 拼接路径
+    res = Path('a/b/c') / 'd/e.txt'
+    print(res)
+    # 规范化路径(正斜线与反斜线问题)
+    print(res.resolve())
+
+#### sys模块
+
+这个模块主要由解释器使用或维护的变量和与解释器进行交互的函数    
+`import sys`
+os模块负责程序与操作系统的交互，提供了访问操作系统底层的接口;sys模块负责程序与python解释器的交互，提供了一系列的函数和变量，用于操控python的运行时环境。
+
+1. sys.argv 命令行参数List，把程序使用者的参数存入列表，第一个元素是程序本身路径，即返回值是一个列表，不加()
+2. sys.modules.keys() 返回所有已经导入的模块列表
+3. sys.exc_info() 获取当前正在处理的异常类,exc_type、exc_value、exc_traceback当前处理的异常详细信息
+4. sys.exit(n) 退出程序，正常退出时exit(0)
+5. sys.hexversion 获取Python解释程序的版本值，16进制格式如：0x020403F0
+6. sys.version 获取Python解释程序的版本信息
+7. sys.maxint 最大的Int值
+8. sys.maxunicode 最大的Unicode值
+9. sys.modules 返回系统导入的模块字段，key是模块名，value是模块
+10. sys.path 返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值
+11. sys.platform 返回操作系统平台名称
+12. sys.stdout 标准输出 --> sys.stdout.flush() 刷新缓冲区，输出其中内容
+13. sys.stdin 标准输入
+14. sys.stderr 错误输出
+15. sys.exc_clear() 用来清除当前线程所出现的当前的或最近的错误信息
+16. sys.exec_prefix 返回平台独立的python文件安装的位置
+17sys.byteorder 本地字节规则的指示器，big-endian平台的值是'big',little-endian平台的值是'little'
+18. sys.copyright 记录python版权相关的东西
+19. sys.api_version 解释器的C的API版本
+      
+**python输入输出重定向**
+stdin,stdout,以及stderr变量包含与标准I/O流对应的流对象。如果需要更好地控制输出，而print不能满足要求，它们就是所需要的。        
+可以重定向输出和输入到其它设备(device)，或者以非标准的方式处理它们
+
+#### shiutil模块
+
+高级的文件、文件夹、压缩包的处理模块       
+可以替代os模块的一些操作      
+          
+```
+import shutil
+
+# 将一个文件的内容拷贝到另一个文件中
+shutil.copyfileobj(open('aaa.txt', 'r'), open('bbb.txt', 'w'))
+
+# 拷贝文件，目标文件无需存在，即ddd不存在，就会创建它
+shutil.copyfile('ccc.txt', 'ddd.txt')
+
+# 拷贝权限，内容、组、用户均不变，目标文件必须存在
+shutil.copymode('eee.txt', 'fff.txt')
+
+# 拷贝文件状态信息，如：mode bits, atime, mtime, flags等，目标文件必须存在
+shutil.copystat('aaa.txt', 'bbb.txt')
+
+# 拷贝文件的内容和权限
+shutil.copy('aaa.txt', 'bbb.txt')
+
+# 拷贝文件和状态信息
+shutil.copy2('aaa.txt', 'bbb.txt')
+
+# 递归拷贝文件，参数ignore是忽略的内容，目标目录不能存在，其中"*"是通配符
+shutil.copytree('folder1', 'folder2', ignore=shutil.ignore_patterns('*.pyc', 'tmp*')) 
+
+# 递归删除文件
+shutil.rmtree('folder1')
+
+# 递归移动文件，类似mv命令
+shutil.move('folder1', 'folder2')
+
+```
+
+**压缩包管理**        
+创建压缩包并返回文件路径，例如：zip、tar          
+shutil.make_archive(base_name, format,...)        
+
++ base_name： 压缩包的文件名，也可以是压缩包的路径。只是文件名时，则保存至当前目录，否则保存至指定路径： 如 data_bak =>保存至当前路径 如：/tmp/data_bak =>保存至/tmp/
++ format： 压缩包种类，“zip”, “tar”, “bztar”，“gztar”
++ root_dir： 要压缩的文件夹路径（默认当前目录）
++ owner： 用户，默认当前用户
++ group： 组，默认当前组
++ logger： 用于记录日志，通常是logging.Logger对象
+
+```
+import shutil
+ret = shutil.make_archive("data_bak", 'gztar', root_dir='/data')
+# 以上表示把根目录下的文件夹/data以gztar格式压缩，并命名为data_bak
+# 'gztar'表示压缩的格式是gztar
+ret = shutil.make_archive("/tmp/data_bak", 'gztar', root_dir='/data')
+# 把压缩包放到/tmp目录下，名称为data_bak
+```
+配合ZipFile模块和TarFile模块来处理压缩包：
+```
+import zipfile
+
+# 压缩
+z = zipfile.ZipFile('aaa.zip', 'w') # 打开压缩包，w-写入
+z.write('a.log') # 写入文件
+z.write('data.data')
+z.close()
+
+# 解压
+z = zipfile.ZipFile('aaa.zip', 'r') # 打开压缩包，r-读取
+z.extractall(path='.')  # 解压到当前路径
+z.close()
+
+import tarfile
+
+# 压缩
+t=tarfile.open('/tmp/aaa.tar','w')  # 打开压缩包
+t.add('/test1/a.py',arcname='a.bak')  # 在压缩包中添加文件
+t.add('/test1/b.py',arcname='b.bak')
+t.close()
+
+# 解压
+t=tarfile.open('/tmp/aaa.tar','r')  # 打开压缩包
+t.extractall('/bbb')  # 解压到/bbb目录中
+t.close()
+```
+
+#### 序列化与反序列化模块
+
+序列化：对象(变量)从内存中变成可存储或传输的过程称之为序列化，在Python中叫pickling，在其他语言中也被称之为serialization，marshalling，flattening等等
+即一种传输格式，可以和网络上的其他程序或平台共享。    
+           
+反序列化：把已经序列化的内容按照自身平台的需求反解成自己可用的格式内容。   
+
+序列化的功能：    
+1. 持久保存状态(存档)
++ 需知一个软件/程序的执行就在处理一系列状态的变化，在编程语言中，'状态'会以各种各样有结构的数据类型(也可简单的理解为变量)的形式被保存在内存中。 
++ 内存是无法永久保存数据的，当程序运行了一段时间，我们断电或者重启程序，内存中关于这个程序的之前一段时间的数据（有结构）都被清空了。 
++ 在断电或重启程序之前将程序当前内存中所有的数据都保存下来（保存到文件中），以便于下次程序执行能够从文件中载入之前的数据，然后继续执行，这就是序列化。    
+具体的来说，你玩使命召唤闯到了第13关，你保存游戏状态，关机走人，下次再玩，还能从上次的位置开始继续闯关。或如，虚拟机状态的挂起等。
+
+2. 跨平台数据交互
+序列化之后，不仅可以把序列化后的内容写入磁盘，还可以通过网络传输到别的机器上，如果收发的双方约定好实用一种序列化的格式，那么便打破了平台/语言差异化带来的限制，实现了跨平台数据交互。
+
+反过来，把变量内容从序列化的对象重新读到内存里称之为反序列化，即unpickling。
+
+##### json模块
+
+一种通用的文件格式，很多语言可以识别，与python中的一些格式有对应关系      
+
+| json | python |
+| :----:| :----: |
+| {}   | dict  |
+| []   | list  |
+| "string" | str |
+| 1234.56 | int或float |
+| true/false | True/False |
+| null  |  None  |
+```
+import json
+l = [1, 'aaa', True]
+res = json.dumps(l)
+print(res, type(res))
+```
+python中可以用单引号表示字符串，但是在json中，只能用双引号表示字符串     
+
+反解json格式：   
+`l_back = json.loads(res)`
+`print(l_back, type(l_back))`  # 重新得到list类型      
+     
+把json格式内容写入文件：
+方法一：   
+`with open('aaa.json', mode='wt', encoding='utf-8') as f:`
+`   f.write(res)`
+方法二：
+`with open('aaa.json', mode='wt', encoding='utf-8') as f:`
+`   json.dump(l, f)`  # 第一个参数是要写入的内容(列表l)，第二个参数是目标位置
+
+
+读出json格式内容，并反序列化成python的格式，即列表：     
+`with open('aaa.json', mode='rt', encoding='utf-8') as f:`
+`   res = f.read()`
+`   l = json.loads(res)`
+`   print(l, type(l))`
+
+##### pickle模块
+
+只有Python可读          
+
+
+
+
+
+
+
+
+
 
 ## 面向过程的编程思想
 

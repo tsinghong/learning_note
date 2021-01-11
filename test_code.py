@@ -127,9 +127,79 @@
 # print(random.random())
 # print(random.sample([1, 'a', 'b', 2,[1, 2, 3]], 3))
 
-import os
+# import os
 # print(os.listdir('.'))
-print(os.getcwd())
+# print(os.getcwd())
+# res = os.path.normpath('E:\\learning_note')
+# print(res)
+
+import sys
+# sys.argv()
+
+# for f in (sys.stdin, sys.stdout, sys.stderr):
+    # print(f)
+
+import time
+
+# res = ''
+# for i in range(50):
+#     res += '#'
+#     time.sleep(0.1)
+#     print('\r[%-50s]' % res, end='')
+# print()
 
 
 
+# num_rec = 0
+# num_tot = 1025
+# while num_rec < num_tot:
+#     time.sleep(0.1)
+#     num_rec += 1024
+#     percentage = num_rec / num_tot
+#     res = int (50 * percentage) * '#'
+#     # print('\r[%-50s]' % res, end='')
+
+#     print('\r[%-50s] %d%%' % (res, int(100*percentage)), end='') # 更进一步，在最后显示百分比
+
+# print()
+
+# def progress_bar():
+#     for i in range(1, 101):
+#         print("\rDownload progress: {}%: ".format(i), "#" * i, end='')
+        # sys.stdout.flush()
+        # time.sleep(0.05)
+
+# progress_bar()
+
+# import time 
+# scale = 50
+# print("执行开始，祈祷不报错".center(scale // 2, "-"))
+# start = time.perf_counter()
+# for i in range(scale + 1):
+#     a = "*" * i
+#     b = "." * (scale - i)
+#     c = (i / scale) * 100
+#     dur = time.perf_counter() - start
+#     print("\r{:^3.0f}%[{}->{}]{:.2f}s".format(c, a, b, dur), end="")
+#     time.sleep(0.1)
+# print("\n"+"执行结束，万幸".center(scale // 2, "-"))
+
+# import time
+# def func():
+#     # time.sleep(1)
+#     a=time.perf_counter()#第一次调用perf_counter,所以a值应该为零,但是他不是刚好为零
+#     print(a)
+#     print(round(a))#把a四舍五入验证下
+#     print(type(a))#验证a是浮点数
+#     time.sleep(5)
+#     b=time.perf_counter()#sleep5秒后,b的值就应该是5
+#     print(b)
+# func()
+
+
+import json
+l = [1, 'aaa', True, False]
+res = json.dumps(l)
+# print(res, type(res))
+l_back = json.loads(res)
+print(l_back, type(l_back))
