@@ -197,9 +197,35 @@ import time
 # func()
 
 
-import json
-l = [1, 'aaa', True, False]
-res = json.dumps(l)
-# print(res, type(res))
-l_back = json.loads(res)
-print(l_back, type(l_back))
+# import json
+# l = [1, 'aaa', True, False]
+# res = json.dumps(l)
+# # print(res, type(res))
+# l_back = json.loads(res)
+# print(l_back, type(l_back))
+
+
+# name = "张三"
+# print(id(name))
+
+# name = "李四"
+# print(id(name))
+
+
+# list1 = [1, 'aaa', '222']
+# print(id(list1))
+# list1[2] = 'bbb'
+# print(id(list1))
+
+# import logging
+
+# logging.debug('调试debug')
+# logging.info('消息info')
+# logging.warning('警告warning')
+# logging.error('错误error')
+# logging.critical('严重critical')
+
+import re
+
+# print(re.findall('\d+\.?\d*', 'asdf123sadfsdf1.111sadf1asdf3'))
+print(re.findall('a[0-9a-zA-Z]b', 'a11111b axb a3b a1b a0b a4b a9b aXb a\nb'))

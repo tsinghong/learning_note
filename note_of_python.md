@@ -259,13 +259,9 @@ CPU 内存 硬盘
 ## 变量
 
 变量就是可以变化的量，量指的是事物的状态，比如人的年龄、性别，游戏角色的等级、金钱等等
-
+          
 先定义，后使用
-
-对应内分为两个区，一个堆区，一个栈区
-栈区放变量名
-堆区放值
-
+        
 ```
 name = 'xxx' # 定义
 print(name)  # 取
@@ -274,14 +270,14 @@ l = ['a', name]
 print(id(name))
 print(id(l[1]))
 ```
-
+           
 定义变量的时候python解释器会向系统申请内存空间用于存放变量值
 
-**变量有三大组成部分**
-I：变量名=》是指向等号右侧值的内存地址的，用来访问等号右侧的值
-II：赋值符号：将变量值的内存地址绑定给变量名 
-III：变量值：代表记录的事物的状态
-
+**变量有三大组成部分**         
+1. 变量名=》是指向等号右侧值的内存地址的，用来访问等号右侧的值
+2. 赋值符号：将变量值的内存地址绑定给变量名 
+3. 变量值：代表记录的事物的状态
+          
 列表：本身并不存放值，存放的是索引与内容的对应关系，每个索引对应一个内存地址。
 或者说，列表存放的是值的地址。
 ```
@@ -294,17 +290,72 @@ print(l[1])
 l[1]依然指向值'xxx'的内存地址，与变量名无关
 字典：key对应内存地址
 
-### 内存管理：垃圾回收(GC)
+### 内存管理与垃圾回收(GC)
 
-垃圾：一个变量被绑定的变量名个数为0，此时该变量的值无法再被访问到，这个值就称之为垃圾
+内存管理是指在程序的运行过程中，分配内容和回收内存的过程。如果只分配，不回收，电脑上那点内存很快就被用光。     
+好的程序能够高效的使用内存，不好的程序会造成过多的内存消耗，内存泄露，栈溢出，程序死翘翘。       
 
+举个例子：生成包含1亿个随机字符串的序列，小白可能用list，而有点经验的会用generator。内存的使用效率可能差了一亿倍。      
+        
+generator出现的一个重要原因就是省内存。
+       
+**变量存储机制**
+
+定义一个变量：  
+```
+name = "张三"
+print(id(name))
+
+name = "李四"
+print(id(name))
+```
+一个变量在内存中有两个部分：    
++ 一个是name这个变量名 --> 栈区
++ 一个是真正存储变量值  --> 堆区
+
+上述代码在内存中的变化过程如下：    
+    栈区           堆区
+    name  ------> "张三"
+
+    name -------> "李四"
+                  "张三"
+此时，"张三"这个值依然存在内存中，但是不在有变量使用，可能会被垃圾回收器销毁
+
+容器类型变量：   
+    list1 = [1, 'aaa', '222']
+    print(id(list1))
+    list1[2] = 'bbb'
+    print(id(list1))
+这个存储的原理如下：   
+    栈区                               堆区
+    指向值的内存地址-->列表值---------> 1
+                           ---------> 'aaa'
+                           ---------> '222'
+          
+    指向值的内存地址-->列表值---------> 1
+                           ---------> 'aaa'
+                           ---------> 'bbb'
+如上：改变一个列表内的值不会影响列表的地址，列表存放的只是值的地址      
+
+**参数传递和返回值**     
+         
+1. 对于不可变的参数类型，例如字符串、整数这样的类型，函数通过拷贝进行传递，因为函数内外的string变量的id是不一样的。      
+2. 而对于像是列表，字典这样的可变对象，函数是通过引用进行传递。表现在函数内外，列表的id是一样的。       
+         
+结论：函数参数的传递和返回值的传递都是传递的变量所指向的内存地址！     
+
+
+**垃圾回收机制**
+       
+垃圾：一个变量被绑定的变量名个数为0，此时该变量的值无法再被访问到，这个值就称之为垃圾；      
+执行垃圾回收的是叫垃圾回收器(Garbage Collecor)的后台线程    
+            
 垃圾回收机制有三种：
-1.引用计数
-2.标记清除
-3.分代回收
+1. 引用计数
+2. 标记清除
+3. 分代回收
 
 引用分为直接引用和间接引用
-
 ```
 x = 10 # 直接引用
 l = ['a', x]  # 间接应用，列表中为变量的内存地址
@@ -325,24 +376,37 @@ del x # 解除变量名x与10的绑定关系，计数为2
 del y # 10的计数为1
 z = 12345 # 10的引用计数为0，此时被回收
 ```
-
+            
 引用计数为0，gc机制就将值回收
-
-容器之间容易出现循环引用问题
-循环引用导致计数不为0，但是又无法取到
-此时无法通过引用计数回收
+            
+容器之间容易出现循环引用问题           
+循环引用导致计数不为0，但是又无法取到          
+此时无法通过引用计数回收           
 ---> 内存泄漏，该内存无法被清空
+            
+标记清除：不是时时刻刻都在运行，当内存不够用时，python解释器会停止解释程序，开始扫描栈区            
+如果堆区的值在栈区中没有变量*直接引用*，就清除堆区            
 
-标记清除：不是时时刻刻都在运行，当内存不够用时，python解释器会停止解释程序，开始扫描栈区
-如果堆区的值在栈区中没有变量*直接引用*，就清除堆区
+分代：         
+优化扫描垃圾的频率        
+在历经多次扫描的情况下，都没有被回收的变量，gc机制    
+就认为该变量是常用变量，gc会对其扫描的频率降低    
+即根据变量的存活时间划分不同的等级（不同的代）   
+以代为依据进行扫描       
+         
+查看对象的引用次数：
+`import sys`
+`name = '张三'`
+`print(sys.getrecount(name))`
+这其中的4次引用：
+1. name变量
+2. getrefcount：当name被传递给getrefcount函数的时候，函数的参数也指向了它。
+3. Python解释器：为了执行这个脚本，Python解释器也保留了一个引用，直到脚本结束。只针对脚本全局变量。
+4. 编译优化器：当执行脚本的时候，优化器会尝试优化字节码，所以也产生了一次引用。这个引用是临时的，很快就会消失。
+如果不在脚本中运行，直接在交互式Python下运行，refcount是2        
 
-
-分代：
-优化扫描垃圾的频率
-在历经多次扫描的情况下，都没有被回收的变量，gc机制
-就认为该变量是常用变量，gc会对其扫描的频率降低
-即根据变量的存活时间划分不同的等级（不同的代）
-以代为依据进行扫描
+手动回收：
+导入gc模块并调用gc.collect()函数来立即执行垃圾回收       
 
 ### 变量的基本类型
 
@@ -3130,14 +3194,14 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 
 ## 模块
 
-模块是一系列功能的集合体   
-
-注意：模块文件的用途是存放功能，而不是用来运行    
-
-自定义模块的命名应当使用纯小写+下划线的风格
-
+模块是一系列功能的集合体    
+           
+注意：模块文件的用途是存放功能，而不是用来运行     
+              
+自定义模块的命名应当使用纯小写+下划线的风格       
+         
 模块和函数一样都是第一类对象（一等公民），即可以当返回值，被赋值给变量，当容器类型的元素    
-
+              
 1. 内置模块 --> 大多是c/c++写的
 2. 第三方模块  --> 其他人写的
 3. 自定义的模块--> 可以是python写的，也可以是c/c++写的
@@ -3150,12 +3214,25 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 3. 把一系列模块组织到一起的文件夹（注：文件夹下有一个__init__.py文件，该文件夹称之为包）
 4. 使用C编写并链接到python解释器的内置模块
 
+基本表现形式：
+1. 模块：类似 .py，.pyc， .pyd ，.so，.dll 这样的文件，是 Python 代码载体的最小单元。
+2. 包：
++ Regular packages：是一个带有 \__init__.py  文件的文件夹，此文件夹下可包含其他子包，或者模块
++ Namespace packages：(官方文档)是由多个部分构成的，每个部分为父包增加一个子包。各个部分可能处于文件系统的不同位置。部分也可能处于 zip 文件中、网络上，或者Python 在导入期间可以搜索的其他地方。命名空间包并不一定会直接对应到文件系统中的对象；它们有可能是无实体表示的虚拟模块。
+               
 **模块的作用**
 1. 内置与第三的模块拿来就用，无需定义，这种拿来主义，可以极大地提升自己的开发效率
 2. 自定义的模块：可以将程序的各部分功能提取出来放到一模块中为大家共享使用，减少了代码冗余，程序组织结构更加清晰
 
 ### 模块的导入
 
+**模块的导入顺序**
+1. import语句应当分行书写
+2. 使用绝对导入absolute import
+3. import语句应当放在文件头部，置于模块说明及docstring之后，全局变量之前
+4. import语句应该按照顺序排列，每组之间用一个空格分隔，按照内置模块，第三方模块，自己所写的模块调用顺序，同时每组内部按照字母表顺序排列
+
+**导入方法**
 新建一个py文件，名为mol_1.py    
 新建一个主文件，名为run.py      
 
@@ -3753,7 +3830,7 @@ os模块负责程序与操作系统的交互，提供了访问操作系统底层
 stdin,stdout,以及stderr变量包含与标准I/O流对应的流对象。如果需要更好地控制输出，而print不能满足要求，它们就是所需要的。        
 可以重定向输出和输入到其它设备(device)，或者以非标准的方式处理它们
 
-#### shiutil模块
+#### shutil模块
 
 高级的文件、文件夹、压缩包的处理模块       
 可以替代os模块的一些操作      
@@ -4071,13 +4148,312 @@ subprocess-->子进程
 
 #### 日志模块
 
+    import logging
+
+    # 记录调试程序过程中的信息，上线运行之后不再输出
+    logging.debug('调试debug')
+
+    # 记录程序运行过程中的信息
+    logging.info('消息info')
+
+    # 程序出问题，但是不致命，程序依然可以运行
+    logging.warning('警告warn')
+
+    # 程序发生错误
+    logging.error('错误error')
+
+    # 出现严重错误
+    logging.critical('严重critical')
+
+输出：
+    WARNING:root:警告warning
+    ERROR:root:错误error
+    CRITICAL:root:严重critical
+
+默认输出warning以上级别，依据设置的warning级别来输出以上的    
+debug(最低级别)-->info-->warning-->error-->critical(最高级别)    
+
+日志的配置：放在开始位置
+```
+logging.basicConfig(
+    # 1、日志输出位置：1、终端 2、文件(永久保存)，a模式
+    # filename='access.log', # 不指定，默认打印到终端
+
+    # 2、日志格式
+    format='%(asctime)s - %(name)s - %(levelname)s -%(module)s:  %(message)s',
+
+    # 3、时间格式 --> 用于替换%(asctime)s处的时间格式
+    datefmt='%Y-%m-%d %H:%M:%S %p',
+
+    # 4、日志级别
+    # critical => 50
+    # error => 40
+    # warning => 30
+    # info => 20
+    # debug => 10
+    level=30, # 如果设置成10，就变成了debug以上(含)级别输出
+)
+```
+
+控制日志的格式：format处定制
+1. %(name)s Logger的名字
+2. %(levelno)s 数字形式的日志级别
+3. %(levelname)s 文本形式的日志级别
+4. %(pathname)s 调用日志输出函数的模块的完整路径名，可能没有
+5. %(filename)s 调用日志输出函数的模块的文件名
+6. %(module)s 调用日志输出函数的模块名
+7. %(funcName)s 调用日志输出函数的函数名
+8. %(lineno)d 调用日志输出函数的语句所在的代码行
+9. %(created)f 当前时间，用UNIX标准的表示时间的浮 点数表示
+10. %(relativeCreated)d 输出日志信息时的，自Logger创建以 来的毫秒数
+11. %(asctime)s 字符串形式的当前时间。默认格式是 “2003-07-08 16:49:45,896”。逗号后面的是毫秒
+12. %(thread)d 线程ID。可能没有
+13. %(threadName)s 线程名。可能没有
+14. %(process)d 进程ID。可能没有
+15. %(message)s用户输出的消息
+
+日志还有更复杂的配置，应当把配置放入软件开发的配置目录中，然后在读取配置信息。  
 
 
 
+强调：其中的%(name)s为getlogger时指定的名字
+    standard_format = '[%(asctime)s][%(threadName)s:%(thread)d][task_id:%(name)s][%(filename)s:%(lineno)d]' \ '[%(levelname)s][%(message)s]'
 
-#### re模块
+    simple_format = '[%(levelname)s][%(asctime)s][%(filename)s:%(lineno)d]%(message)s'
+
+    test_format = '%(asctime)s] %(message)s'  
+
+日志配置字典：
+```
+LOGGING_DIC = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': standard_format
+        },
+        'simple': {
+            'format': simple_format
+        },
+        'test': {
+            'format': test_format
+        },
+    },
+    'filters': {},
+    'handlers': {
+        #打印到终端的日志
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',  # 打印到屏幕
+            'formatter': 'simple' # 来自于formatters
+        },
+        #打印到文件的日志,收集info及以上的日志
+        'default': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件,日志轮转
+            'formatter': 'standard',
+            # 可以定制日志文件路径
+            # BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # log文件的目录
+            # LOG_PATH = os.path.join(BASE_DIR,'a1.log')
+            'filename': 'a1.log',  # 日志文件
+            'maxBytes': 1024*1024*5,  # 日志大小 5M
+            'backupCount': 5,
+            'encoding': 'utf-8',  # 日志文件的编码，再也不用担心中文log乱码了
+        },
+        'other': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',  # 保存到文件
+            'formatter': 'test',
+            'filename': 'a2.log',
+            'encoding': 'utf-8',
+        },
+    },
+    'loggers': {
+        #logging.getLogger(__name__)拿到的logger配置
+        'kkk': {
+            'handlers': ['default', 'console'],  # 这里把上面定义的两个handler都加上，即log数据既写入文件又打印到屏幕
+            'level': 'DEBUG', # loggers(第一层日志级别关限制)--->handlers(第二层日志级别关卡限制)
+            'propagate': False,  # 默认为True，向上（更高level的logger）传递，通常设置为False即可，否则会一份日志向上层层传递
+        },
+        '专门的采集': {
+            'handlers': ['other',],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        '': {
+            'handlers': ['other',],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+```
+解释：     
+1. 'version':1 # -->配置的版本信息，自定义
+2. 'disable_existing_loggers':False  
+3. 'formatters': {}  # 设置多个日志格式
+4. 'filters': {}
+5. 'handlers': {}  # 控制日志输出位置，方式，编码等等
+6. 'loggers': {}  # 日志的产生者
+
+**如何使用**       
+1. 把配置字典的内容放在settings.py文件内
+2. 导入配置字典        
+`import settings`         
+`from logging import config`           
+`config.dictConfig(settings.LOGGING_DIC)` 
+3. 获取日志字典内的日志产生者             
+`from logging import getLogger`         
+`log1 = getLogger('kkk')`         
+4. 产生日志          
+`logger1.info('info日志')`            
++ 依据配置，这条配置由kkk产生，其级别为'DEBUG'，所以INFO级别也接收
++ 然后把这个日志传给handlers，其级别为'DEBUG'，所以也接收这条信息
+
+**日志的命名**      
+日志的名字就是日志产生者，即配置字典中'loggers'记录的名字     
+在formatters中的%(name)s输出的       
+日志名是区分日志业务归属的一种非常重要的标识     
+例如把'bbb'改成'用户交易'     
+如果多个业务逻辑用到同一个配置，应当把字典的key设置为空，即''    
+
+大多数业务是要把日志输出到同一文件中去，应当主要使用空''   
+一些定制的日志用具体的名字       
+
+**日志轮转**         
+日志记录者程序运行过程中的关键信息       
+日记记录不可以轻易删除        
+不应当让一个日志文件无限累加下去，导致单个文件内容过大          
+            
+定期将原日志文件重命名，以大小来限定：   
+```
+在字典中配置如下：
+'default': {
+        'level': 'DEBUG',
+        'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件,日志轮转
+        'formatter': 'standard',
+        # 可以定制日志文件路径
+        # BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # log文件的目录
+        # LOG_PATH = os.path.join(BASE_DIR,'a1.log')
+        'filename': 'a1.log',  # 日志文件
+        'maxBytes': 1024*1024*5,  # 日志大小 5M
+        'backupCount': 5,  # 备份超过5份就删除最老的那个文件，如果重要请设置大一点
+        'encoding': 'utf-8',  # 日志文件的编码，再也不用担心中文log乱码了
+            },
+
+```
+
+#### re模块——正则表达式\\TODO
 
 正则表达式，全语言通用的规则      
+            
+正则就是用一些具有特殊含义的符号组合到一起（称为正则表达式）来描述字符或者字符串的方法。           
+或者说：正则就是用来描述一类事物的规则。（在Python中）它内嵌在Python中，并通过 re 模块实现。正则表达式模式被编译成一系列的字节码，然后由用 C 编写的匹配引擎执行。         
+       
+![正则表达式](image/正则表达式.png)
+        
+`import re`
+`res = re.findall('\w', 'abc123_*()-= ')` 
+`print(res)` # 返回值是一个列表
+
+\w是如何工作的？   
+首先从字符串的第一个字符开始匹配，'a'字符符合条件，放入列表，然后匹配下一个字符  
+'b'也符合，放入列表，直到*不符合，跳过，匹配下一个，直到最后     
+
+`re.findall('\W', 'abc123_*()-= ')`
+匹配原理同上，但是\W匹配的是非字母数字下划线      
+
+`re.findall('\Aalex', 'alexis alex sb')`
+这里，'\Aalex'表示一个组合，正则的规则是\A，后面的alex则表示要匹配的内容    
+即从头开始查找alex这个字符串     
+从字符串第一个字符开始，'a'匹配上，匹配第二个字符，也匹配了，一直匹配到alex   
+因为\A只匹配字符串开头，所以第二个'alex'不会被找到       
+        
+`re.findall('alex', 'alexis alex sb')`
+没有加任何的匹配规则，就是从字符串中找到alex      
+找到开头的alex之后，从字符'i'开始，与'a'不匹配，跳过    
+'s'与'a'也不匹配，跳过，直到发现第二个'a'，然后逐字匹配，匹配完成就放入列表   
+         
+**重要提示：**        
+1. 在字符串中看不见的也是内容，空格，换行符，制表符等等       
+2. 匹配规则一定是连续的   
++ 'abc'，就是查找abc
++ '^alex$'，查找开头是字符'a'，结尾是字符'b'，中间是'le'  
++ 从匹配成功的字符串后一个字符开始下一次匹配，不成功则继续逐字匹配      
+          
+**重复匹配符**             
+包含：          
+`.; *; ?; .*; .*?; +; {n, m}`         
+`print(re.findall('a.b', 'a1b a2b  a  b a b))` # '.'匹配任意一个字符，\n除外，强调是一个字符       
+`print(re.findall('a.b', 'a1b a2b  a  b a b), re.DOTALL)` # re.DOTALL表示可以匹配换行符         
+`print(re.findall('a..b', 'a1b a2b  a  b a b))` # 匹配a+任意两个字符+b，\n除外         
+          
+`print(re.findall('ab*', 'a  ab  abbbbb bbbb'))` # '*'不可单独存在，表示左侧字符重复0次或无穷次，'a'必须有，'b'可有0次或无穷次       
+`print(re.findall('ab+', 'a  ab  abbbbb bbbb'))` # '*'不可单独存在，表示左侧字符重复1次或无穷次，'a'必须有，'b'至少1次或无穷次       
+`print(re.findall('ab?', 'a  ab  abbbbb bbbb'))` # '*'不可单独存在，表示左侧字符重复0次或1次，'a'必须有，'b'可有0次或1次       
+        
+{n,m}: 左侧字符重复n次到m次，可以取代上面几个       
+{0,} 可以代替'*'        
+{1,} 可以代替'+'         
+{0,1} 可以代替'?'       
+{n} 左侧字符匹配的次数    
+`print(re.findall('ab{2,5}', 'a  ab  abbbbb bbbb'))` # b出现2-5次    
+     
+取出所有数字      
+`print(re.findall('\d+\.?\d*', 'asdf123sadfsdf1.111sadf1asdf3'))`     
+      
+\[]匹配指定字符一个，可以放多个，如果是数字可以指定范围     
+`print(re.findall('a[501234]b', 'a1b a2b a3b a4b a\nb', re.DOTALL))`    
+`print(re.findall('a[0-5]b', 'a1b a2b a3b a4b a b a\nb', re.DOTALL))`    
+`print(re.findall('a[0-9a-zA-Z]b', 'a1b a2b aXb aab a b a\nb', re.DOTALL))`    
+`print(re.findall('a[^0-9a-zA-Z]b', 'a1b a2b aXb aab a b a\nb', re.DOTALL))`    # 这里的^表示取反，0-9与a-z与A-Z之外的所有字符   
+    
+注意：减号在中括号内，如果左右都有字符，表示范围，如果单纯地想匹配减号，应当放到最左侧或最右侧，表一个普通字符，如'a\[-0-9]b'
+
+==========================
+re模块的方法       
+```
+import re
+
+# ['e', 'e', 'e'],返回所有满足匹配条件的结果,放在列表里
+print(re.findall('e','alex make love') )   
+   
+# e,只到找到第一个匹配然后返回一个包含匹配信息的对象,该对象可以通过调用group()方法得到匹配的字符串,如果字符串没有匹配，则返回None。
+print(re.search('e','alex make love').group()) 
+ 
+#None,同search,不过在字符串开始处进行匹配,完全可以用search+^代替match
+print(re.match('e','alex make love'))    
+
+#['', '', 'cd']，先按'a'分割得到''和'bcd',再对''和'bcd'分别按'b'分割
+print(re.split('[ab]','abcd'))     
+
+#===> Alex mAke love，不指定n，默认替换所有
+print('===>',re.sub('a','A','alex make love')) 
+
+print('===>',re.sub('a','A','alex make love',1)) #===> Alex make love
+print('===>',re.sub('a','A','alex make love',2)) #===> Alex mAke love
+print('===>',re.sub('^(\w+)(.*?\s)(\w+)(.*?\s)(\w+)(.*?)$',r'\5\2\3\4\1','alex make love')) #===> love make alex
+
+print('===>',re.subn('a','A','alex make love')) #===> ('Alex mAke love', 2),结果带有总共替换的个数
+
+
+obj=re.compile('\d{2}')
+print(obj.search('abc123eeee').group()) #12
+print(obj.findall('abc123eeee')) #['12'],重用了obj
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 面向过程的编程思想
@@ -4153,6 +4529,11 @@ python3.5之前用这个，兼容python2，3.5以后提供了pathlib包，更方
 `if __name__ == '__main__':`
 `   run()`
 
+### 执行文件放置位置
+
+把start.py放到项目文件夹的根目录下，运行之后直接将所在文件夹加入到sys.path中
+省去了处理环境变量的麻烦         
+
 ### 一些其他规范
 
 配置文件中的变量一般都用大写，文件路径配置应当放入settings.py中               
@@ -4160,28 +4541,6 @@ python3.5之前用这个，兼容python2，3.5以后提供了pathlib包，更方
 其他文件不要导入执行文件，即start.py或者run.py    
    
 共用的功能记得放入common文件夹
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Python基础--面向对象编程
 
