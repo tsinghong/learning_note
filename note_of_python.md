@@ -1847,25 +1847,44 @@ C语言中，是把实参的副本复制给形参，不会影响到原参数
 位置实参:在函数调用阶段，按照从左到有的顺序依次传入的值   
 特点：按照顺序与形参一一对应   
 
+    def func(x, y, z):
+        return x+y+z
+    print(func(1, 2, 3))
+
 **关键字形参**
 
-关键字实参：在函数调用阶段，按照key=value的形式传入的值
+关键字实参：在函数调用阶段，按照key=value的形式传入的值    
 特点：指名道姓给某个形参传值，可以完全不参照顺序
+
+    def func(x, y, z):
+        return x+y+z
+    res = func(z=3, x=2, y=1)
+    print(res)
 
 **混用**
 
 1. 位置实参必须放在关键字实参前
 2. 不能能为同一个形参重复传值
 
+    def func(x, y, z):
+        return x+y+z
+    res = func(1, 2, z=3)
+    print(res)
+
 **默认形参**
 
-默认形参：在定义函数阶段，就已经被赋值的形参，称之为默认参数
-特点：在定义阶段就已经被赋值，意味着在调用阶段可以不用为其赋值
+默认形参：在定义函数阶段，就已经被赋值的形参，称之为默认参数    
+特点：在定义阶段就已经被赋值，意味着在调用阶段可以不用为其赋值    
+
+    def func(x, y, z=1):
+        return x+y+z
+    res = func(2, 3)
+    print(res)
 
 **位置形参与默认形参混用**
 
-1、位置形参必须在默认形参的左边  
-2、默认参数的值是在函数定义阶段被赋值的，准确地说被赋予的是值的内存地址
+1. 位置形参必须在默认形参的左边  
+2. 默认参数的值是在函数定义阶段被赋值的，准确地说被赋予的是值的内存地址
 ```
 m=2
 def func(x,y=m): # y=>2的内存地址
@@ -1884,7 +1903,7 @@ func(1)
 ```
 函数最理想的状态：函数的调用只跟函数本身有关系，不外界代码的影响
 
-3、虽然默认值可以被指定为任意数据类型，但是不推荐使用可变类型   
+3. 虽然默认值可以被指定为任意数据类型，但是不推荐使用可变类型   
 可变类型会导致函数结果的不确定   
 如果在程序的其他地方更改了可变类型，直接导致函数结果发生变化   
 
@@ -1904,18 +1923,18 @@ func(4,5,6)
 new_l=[111,222]
 func(1,2,3,new_l)
 ```
-补充：None类似于小整数池，在解释器启动后就会被生成
+补充：None类似于小整数池，在解释器启动后就会被生成         
 无论是什么方法产生的None其实都是一个None，都指向最初的None的地址
 
 ### 可变长度参数
 
-可变长度指的是在调用函数时，传入的值（实参）的个数不固定
+可变长度指的是在调用函数时，传入的值（实参）的个数不固定     
 而实参是用来为形参赋值的，所以对应着，针对溢出的实参必须有对应的形参来接收
 
 **可变长度的位置参数**
 
-\*形参名：用来接收溢出的位置实参，溢出的位置实参会被\*保存成*元组*的格式然后赋值紧跟其后的形参名
-\*后跟的可以是任意名字，但是约定俗成应该是args
++ 形参名：用来接收溢出的位置实参，溢出的位置实参会被\*保存成*元组*的格式然后赋值紧跟其后的形参名
++ 后跟的可以是任意名字，但是约定俗成应该是args
 
 1. 形参中带*
 ```
@@ -1929,8 +1948,8 @@ res=my_sum(1,2,3,4,)
 print(res)
 ```
 
-2. 实参中带*
-\*可以用在实参中，实参中带\*，先\*后的值打散成位置实参
+2. 实参中带*   
+\*可以用在实参中，实参中带\*，先把\*后的值打散成位置实参
 ```
 def func(x,y,z):
     print(x,y,z)
@@ -1954,8 +1973,8 @@ func(*'hello') # func('h','e','l','l','o')
 
 **可变长度的关键字参数**
 
-<\*\*形参名>：用来接收溢出的关键字实参，\*\*会将溢出的关键字实参保存成*字典*格式，然后赋值给紧跟其后的形参名
-**后跟的可以是任意名字，但是约定俗成应该是kwargs
+<\*\*形参名>：用来接收溢出的关键字实参，\*\*会将溢出的关键字实参保存成*字典*格式，然后赋值给紧跟其后的形参名   
+**后跟的可以是任意名字，但是约定俗成应该是kwargs  
 即：两个星号+形参名
 
 1. 形参中带**
@@ -1966,7 +1985,7 @@ def func(x,y,**kwargs):
 func(1,y=2,a=1,b=2,c=3)
 ```
 
-2. 实参中带**
+2. 实参中带**   
 \*\*后跟的只能是字典，实参中带**，先**后的值打散成关键字实参
 ```
 def func(x,y,z):
@@ -1977,7 +1996,6 @@ func(**{'x':1,'y':2,'z':3}) # func(x=1,y=2,z=3)
 ```
 
 3. 形参和实参都带**
-
 ```
 def func(x,y,**kwargs):
     print(x,y,kwargs)
@@ -1986,7 +2004,7 @@ func(y=222,x=111,a=333,b=444)
 func(**{'y':222,'x':111,'a':333,'b':4444})
 ```
 
-**混用\*和\*\***
+**混用\*和\*\***  
 *args必须在**kwargs之前
 
 ```
@@ -2015,10 +2033,9 @@ wrapper(1,z=3,y=2) # 为wrapper传递的参数是给index用的
 
 无论index的参数如何变化，wrapper都可以接受任意参数并传给index
 
-
-**命名关键字参数**
-在定义函数时，*后定义的参数，如下所示，称之为命名关键字参数
-特点： 命名关键字实参必须按照key=value的形式为其传值
+**命名关键字参数**  
+在定义函数时，*后定义的参数，如下所示，称之为命名关键字参数  
+特点： 命名关键字实参必须按照key=value的形式为其传值  
 ```
 def func(x,y,*,a,b): # 其中，a和b称之为命名关键字参数
     print(x,y)
@@ -2031,55 +2048,55 @@ func(1,2,b=222,a=111)
 
 ## 名称空间与作用域
 
-复习：内存划分两个区域，栈区和堆区
-栈区存放变量名，堆区（堆放货物）存放值
+复习：内存划分两个区域，栈区和堆区  
+栈区存放变量名，堆区（堆放货物）存放值  
 
 名称空间有三种：内置名称空间、全局名称空间、局部名称空间
 
 1. 内置名称空间
 
-存放的名字：存放的python解释器内置的名字
+存放的名字：存放的python解释器内置的名字  
 存活周期：python解释器启动则产生，python解释器关闭则销毁
 
 2. 全局名称空间
 
-存放的名字：只要不是函数内定义、也不是内置的，剩下的都是全局名称空间的名字
+存放的名字：只要不是函数内定义、也不是内置的，剩下的都是全局名称空间的名字  
 存活周期：python文件执行则产生，python文件运行完毕后销毁
 
 3. 局部名称空间
 
-存放的名字：在调用函数时，运行函数体代码过程中产生的函数内的名字
+存放的名字：在调用函数时，运行函数体代码过程中产生的函数内的名字  
 存活周期：在调用函数时存活，函数调用完毕后则销毁
 
-**名称空间的加载顺序**
+**名称空间的加载顺序**  
 内置名称空间>全局名称空间>局部名称空间
 
-**名称空间的销毁顺序**
+**名称空间的销毁顺序**  
 局部名称空间>全局名空间>内置名称空间
 
-**名字的查找优先级：当前所在的位置向上一层一层查找**
-内置
-↑
-全局
-↑
-局部
-
+**名字的查找优先级：当前所在的位置向上一层一层查找**  
+内置  
+↑  
+全局  
+↑  
+局部  
+  
 如果当前处在全局名称空间，只会向上查找内置名称空间
 
-**注意：名称空间的"嵌套"关系是以函数定义阶段为准，与调用位置无关**
+**注意：名称空间的"嵌套"关系是以函数定义阶段为准，与调用位置无关**  
 
-**作用域**
-全局作用域：内置名称空间、全局名称空间
-1、全局存活
-2、全局有效:被所有函数共享
+**作用域**  
+全局作用域：内置名称空间、全局名称空间  
+1. 全局存活  
+2. 全局有效:被所有函数共享  
 
 局部作用域: 局部名称空间的名字
-1、临时存活
-2、局部有效:函数内有效
+1. 临时存活
+2. 局部有效:函数内有效
 
 局部函数的私有变量对全局变量有遮蔽效应，即在函数内部中，覆盖全局变量
 
-**global与nonlocal**
+**global与nonlocal** 
 
 如果再局部想要修改全局的名字对应的值（不可变类型），需要用global
 ```
@@ -3148,15 +3165,15 @@ Python是一种动态语言，在声明一个变量时我们不需要显式地�
 注意中间不能有冒号
 
 例：两个数比大小   
-`x = 1`
-`y = 2`
-`res = x if x < y else y`
-`print(res)`
+`x = 1`   
+`y = 2`   
+`res = x if x < y else y`   
+`print(res)`   
 
-***各种生成器主要针对的是容器类型***
-**列表生成式**
+***各种生成器主要针对的是容器类型***   
+**列表生成式**   
 
-用列表生成式的目的就是精简代码  
+用列表生成式的目的就是精简代码   
 
 语法格式：表达式 for item1 in iterable1 if condition1  
 可以多层嵌套：
@@ -3215,9 +3232,7 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
     res = sum(len(line) for line in f) # -->可以简写
     print(res)
 ```
-
-
-
+----
 
 # 模块
 
@@ -3235,7 +3250,7 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 
 一个python文件本身就一个模块，文件名m.py，模块名叫m      
 
-模块有四种形式
+模块有四种形式:
 1. 使用python编写的.py文件 
 2. 已被编译为共享库或DLL的C或C++扩展 
 3. 把一系列模块组织到一起的文件夹（注：文件夹下有一个__init__.py文件，该文件夹称之为包）
@@ -3248,12 +3263,12 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 + Namespace packages：(官方文档)是由多个部分构成的，每个部分为父包增加一个子包。各个部分可能处于文件系统的不同位置。部分也可能处于 zip 文件中、网络上，或者Python 在导入期间可以搜索的其他地方。命名空间包并不一定会直接对应到文件系统中的对象；它们有可能是无实体表示的虚拟模块。
                
 **模块的作用**
-1. 内置与第三的模块拿来就用，无需定义，这种拿来主义，可以极大地提升自己的开发效率
+1. 内置与第三方的模块拿来就用，无需定义，这种拿来主义，可以极大地提升自己的开发效率
 2. 自定义的模块：可以将程序的各部分功能提取出来放到一模块中为大家共享使用，减少了代码冗余，程序组织结构更加清晰
 
 ## 模块的导入
 
-**模块的导入顺序**
+**模块的导入规范**
 1. import语句应当分行书写
 2. 使用绝对导入absolute import
 3. import语句应当放在文件头部，置于模块说明及docstring之后，全局变量之前
@@ -3264,7 +3279,7 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 新建一个主文件，名为run.py      
 
 在run.py文件中将mol_1.py作为模块导入    
-`import mol_1`
+`import mol_1`    
 注意：导入模块是不要加后缀名.py
 
 **导入后发生的三件事**    
@@ -3273,9 +3288,9 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 2. 产生mol_1.py的名称空间，将mol_1.py运行过程中产生的名字都丢到mol_1的名称空间中
 3. 在当前文件中产生一个与模块名字相同的变量名mol_1，并指向2中产生的名称空间
 
-之后的导入，都是直接引用首次导入产生的foo.py名称空间,不会重复执行代码
-`import mol_1`
-`import mol_1`  # 此次不执行，只执行上一次的导入
+之后的导入，都是直接引用首次导入产生的foo.py名称空间,不会重复执行代码   
+`import mol_1`   
+`import mol_1`  # 此次不执行，只执行上一次的导入   
 
 三件事的解释 --> 使用import后，在run.py文件中定义了模块的名字，这个名字指向了模块文件，模块就开始运行，并且产生了模块的名称空间，这个名称空间存储的都是模块内的名字，包括函数，变量等等     
 注意：当run.py运行结束后，run.py占用的内存被回收，此时模块文件的引用也消失了，即模块的名称空间在run.py运行结束之后被回收。     
@@ -3298,14 +3313,14 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 运行run.py会发现运行了mol_1.py文件     
 
 **引用模块内容**    
-1. 指名道姓要内容     
-在run.py中使用模块名+.+引用内容即可   
-    # run.py
+  
+1. 指名道姓要内容，加前缀:在run.py中使用模块名+.+引用内容即可   
+
+    /# run.py
     import mol_1
     mol_1.x         # 引用变量
     mol_1.func1()   # 引用函数
 以上指名道姓的要内容不会与当前的文件的内容发生任何冲突     
-
 注意：无论是查看还是修改，操作的都是原模块文件的内容，与调用位置无关
 + 这一点参看作用域相关内容
 + 一个名字指向一个内存地址，run.py中的mol_1.x这个名字指向mol_1.py文件中的x地址
@@ -3313,13 +3328,17 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 
 2. 多模块导入    
 + 写多个import语句
+
     import time
     import mol_1
     import mol_2
+
 + 以逗号为分隔符，写多个模块名（显得不清晰，不建议）
+
     import time, mol_1, mol_2
 
 导入顺序的规范：内置--> 第三方 --> 自定义
+
     import time  # 内置模块
     import os    # 内置模块
 
@@ -3327,13 +3346,13 @@ with open('note_of_git.md', mode='rt', encoding='utf-8') as f:
 
     import mol_1 # 自定义模块
 
-3. 导入并起别名    
-适用与模块名太长的模块       
-语法：import x as y
-`import time as t`
-`t.sleep(3)`
+3. 导入并起别名:适用与模块名太长的模块       
+语法：import x as y  
+`import time as t`   
+`t.sleep(3)`  
 
 4. 可以在函数内导入模块
+
     def func1():
         import time
         pass
@@ -3360,6 +3379,7 @@ python文件的两种用途：
         pass
     func1()
     func2()
+
 此时，用到py文件的一个内置属性__name__   
 __name__有两个属性：1、'__main__', 2、文件名    
 当这个文件被执行的时候__name__ == '__main__'     
@@ -3382,6 +3402,7 @@ __name__有两个属性：1、'__main__', 2、文件名
     if __name__ == '__main__':
        func1()
        func2()
+
 小技巧：输入main之后，vscode可以自动补全if判断代码
 
 **导入的另一种形式：from .. import ..**         
@@ -3392,25 +3413,54 @@ from ... import ...可以加as来表示别名
 1. 产一个模块的名称空间
 2. 运行mol_1.py将运行过程中产生的名字都丢到模块的名称空间去
 3. 在当前名称空间拿到一个名字，该名字与模块名称空间中的某一个内存地址相对应
-
-`from mol_1 import func1`
-`print(mol_1)`
+`from mol_1 import func1`   
+`print(mol_1)`   
 注意：当前名称空间没有mol_1这个名字，但是有func1这个名字
-
+```
     # run.py
     from mol_1 import x
     from mol_1 import func1
     from mol_1 import func2
+```
 
 一次导入模块中的所有名字：     
-`from mol_1 import *`
+`from mol_1 import *`   
 --> 不推荐，容易导致不知道导入了哪些名字       
 --> 一个模块内被需要的名字太多可以用        
 
-**\__all__属性**     
-每一个模块被导入的模块都有一个属性叫__all__   
+**\__all__变量**     
+事实上，当我们向文件导入某个模块时，导入的是该模块中那些名称不以下划线（单下划线“_”或者双下划线“__”）开头的变量、函数和类。因此，如果我们不想模块文件中的某个成员被引入到其它文件中使用，可以在其名称前添加下划线。
+
+    # mol_1.py
+    # 测试
+    print("This is a module")
+    x = 111
+    y = 222
+    z = 333
+    def func1():
+        pass
+    def _func2():
+        pass
+    def __func3():
+        pass
+    if __name__ == '__main__':
+       func1()
+       func2()
+    
+    # run.py
+    from mol_1.py import *
+    func1()
+    func2()
+
+此时func2，func3函数未被导入  
+
 \__all__是一个列表，里面存了字符串格式的名字，默认是当前文件的所有名字    
-所以，可以用这个变量来控制*所导入的名字
+通过在模块文件中设置 __all__ 变量，当其它文件以“from 模块名 import *”的形式导入该模块时，该文件中只能使用 __all__ 列表中指定的成员   
+  
+__all__变量仅限于在其它文件中以“from 模块名 import *”的方式引入。也就是说，如果使用以下 2 种方式引入模块，则 __all__ 变量的设置是无效的。   
+1. 以`import 模块名`的形式导入模块。通过该方式导入模块后，总可以通过模块名前缀（如果为模块指定了别名，则可以使用模快的别名作为前缀）来调用模块内的所有成员（除了以下划线开头命名的成员）。
+2. 以“from 模块名 import 成员”的形式直接导入指定成员。使用此方式导入的模块，__all__ 变量即便设置，也形同虚设。
+
 ```
 mol_1.py
 __all__ = ['x', 'func1']
@@ -3434,30 +3484,29 @@ print(func2)
 
 **模块的查找优先级**    
 1. 内存(内置模块)
-2. 硬盘：按照sys.path中存放的文件的顺序一次查找要导入的模块
-
-`import sys`
-`print(sys.path)`
+2. 硬盘：按照sys.path中存放的文件的顺序一次查找要导入的模块  
+`import sys`  
+`print(sys.path)`    
 这个sys.path是一个列表，里面存放了路径，第一个元素是执行文件所在的文件夹    
 sys.path本质是环境变量的列表      
        
 可以将一个文件夹放入到这个路径中，使其可以被查找(临时加入，运行结束即消失)       
-`sys.path.append(r'路径')`
-注意：尤其是windows系统，记得加上字母r
+`sys.path.append(r'路径')`   
+注意：尤其是windows系统，记得加上字母r  
 
 列表中都找不到则报错      
         
-查看内存中已加载到内存中的模块       
-`import sys`
-`print(sys.modules)`
-字典的形式      
+查看内存中已加载到内存中的模块，字典的形式      
+`import sys`  
+`print(sys.modules)`  
 
 python对于模块导入的性能优化：    
 因为导入模块申请内存空间比较损耗性能，所以，在解除名称与内存的绑定关系之后，    
-模块依然会存在于内存之中
+模块依然会存在于内存之中  
 
 ## 模块编写规范
 
+在python中所有的规范都是建议性质，非强制，遵循规范有助于提升代码的可读性 
 ```
 #!/usr/bin/env python #通常只在类unix环境有效,作用是可以使用脚本名来执行，而无需直接调用解释器。
 
@@ -3483,46 +3532,94 @@ if __name__ == '__main__': # 测试程序
 
 ```
 
+
 ## 包
 
-包就是一个含有__init__.py文件的文件夹   
-包是模块的一种形式，用来被当作模块导入的    
+包就是一个含有__init__.py文件的文件夹，包是模块的一种形式，用来被当作模块导入的    
 包可以用来组织很多个模块       
+\_\_init__.py的作用就是相当于把自身整个文件夹当作一个包来管理，每当有外部import的时候，就会自动执行里面的函数。  
+如果使用一些IDE进行开发，目录中存在__init__.py就会被识别为module package  
+一个包里面可以有子包，子包也应当有__init__.py文件  
+
+\_\_init__.py文件可以是空的，也可以有代码来控制导入内容，但应当保证该文件是简洁的。    
           
 例如：    
-新建一个名为mol_package的文件夹    
+新建一个名为mol_package的文件夹，内含mol1.py，mol2.py，mol3.py    
 在文件夹内新建一个__init__.py的文件    
 在文件夹外新建一个run.py的文件    
-    run.py
-    import mol_package
-    from mol_package import xxx
+
+    # __init__.py
+    print("This is __init__.py")
+
+    # mol1.py
+    def func1():
+        print("This is a function from mol1")
+
+    # mol2.py
+    def func2():
+        print("This is a function from mol2")
+
+    # mol3.py
+    def func3():
+        print("This is a function from mol3")
+
+    # run.py
+    # import mol_package  # 错误，找不到文件
+    import mol_package.mol1 # 包名+文件名才能导入文件的内容
+    from mol_package import mol2
+    from mol_package.mol3 import mol3
+
+    mol_package.mol1.func1()
+    mol2.func2()
+    func3()
+
+以上可以发现导入的三种不同形式导致的函数调用的方便程度不同   
 注意：使用import关键依然会运行文件，但是文件夹是无法被运行的     
 所以，import运行的是文件夹下的__init__.py这个文件     
-        
 在python3中，文件夹下可以没有__init__.py文件，python2必须有     
      
+**使用init控制导入内容**   
 在__init__.py文件中，应该能找到包内的所有名称，这就需要在这个文件中导入文件夹内的模块     
-在mol_package中新建三个文件，mol_1.py,mol_2.py,mol_3.py  
-这个三个文件中分别定义func1,func2,func3这三个函数     
-
 1. 绝对导入：以包这个文件夹作为起始来进行导入
-+ 模块的使用者要把文件夹的路径加入到环境变量中去
-+ from mol_package.mol_1 import func1
-+ from mol_package.mol_2 import func2
-+ from mol_package.mol_3 import func3
++ 模块的使用者要把文件夹的路径加入到环境变量中去，方便的做法是把包放在项目根目录下
 + 基本形式：from 文件夹名.模块名 import 功能名
 + 绝对导入无论在哪个位置，都可以从顶级包开始，都能找的到
+```
+# __init__.py
+print("This is __init__.py")
+
+from mol_package.mol1 import func1
+from mol_package.mol2 import func2
+from mol_package.mol3 import func3
+
+# run.py
+import mol_package
+mol_package.func1()
+mol_package.func2()
+mol_package.func3()
+
+# run.py-->更简洁的写法
+import mol_package as f1
+# from mol_package import * 省略f1前缀直接用func1()
+
+f1.func1()
+f1.func2()
+f1.func3()
+```
 
 2. 相对导入：.代表当前文件所在的目录，..代表当前目录的上一级目录，依此类推
 + 相对导入仅限于包内，不能跨出包
 + 包内模块之间的导入推荐使用相对导入，比较精简
 
-注意三点：   
+**init的设计原则**   
+1. 不要污染现有的命名空间。模块一个目的，是为了避免命名冲突，如果你在用__init__.py时违背这个原则，是反其道而为之，就没有必要使用模块了。
+2. 利用__init__.py对外提供类型、变量和接口，对用户隐藏各个子模块的实现。一个模块的实现可能非常复杂，你需要用很多个文件，甚至很多子模块来实现，但用户可能只需要知道一个类型和接口。
+3. 只在__init__.py中导入有必要的内容，不要做没必要的运算。
+
+其他的注意事项，三点：   
 1. 关于包相关的导入语句也分为import和from ... import ...两种，但是无论哪种，无论在什么位置，在导入时都必须遵循一个原则：凡是在导入时带点的，点的左边都必须是一个包，否则非法。     
 可以带有一连串的点，如import 顶级包.子包.子模块,但都必须遵循这个原则。但对于导入后，在使用时就没有这种限制了，点的左边可以是包,模块，函数，类(它们都可以用点的方式调用自己的属性)。        
-
 2. 包A和包B下有同名模块也不会冲突，如A.a与B.a来自俩个命名空间
-
 3. import导入文件时，产生名称空间中的名字来源于文件，import 包，产生的名称空间的名字同样来源于文件，即包下的__init__.py，导入包本质就是在导入该文件
       
 自己开发包的场景：1、项目很大，有很多通用的功能；2、自己为行业写一个功能
@@ -3535,16 +3632,16 @@ if __name__ == '__main__': # 测试程序
 
 三种格式：
 1. 时间戳：1970年到现在的秒数
-`import time`
-`print(time.time())`
+`import time`   
+`print(time.time())`   
 time.time() # 结果是秒，是1970年1月1日0时0分(unix元年，诞生的年份)到当前时间的秒数  
 返回值是float型    
 用于时间间隔的计算    
 
 2. 格式化的字符串格式：
-`import time`
-`print(time.strftime('%Y-%m-%d %H:%M:%S %p'))`
-`print(time.strftime('%Y-%m-%d %X'))`
+`import time`   
+`print(time.strftime('%Y-%m-%d %H:%M:%S %p'))`   
+`print(time.strftime('%Y-%m-%d %X'))`   
 其他格式：
 + %a    Locale’s abbreviated weekday name.     
 + %A    Locale’s full weekday name.     
@@ -3569,8 +3666,7 @@ time.time() # 结果是秒，是1970年1月1日0时0分(unix元年，诞生的�
 + %z    Time zone offset indicating a positive or negative time difference from UTC/GMT of the form +HHMM or -HHMM, where H represents decimal hour digits and M represents decimal minute digits [-23:59, +23:59].     
 + %Z    Time zone name (no characters if no time zone exists).  
 
-返回值是str型        
-主要用于展示         
+返回值是str型，主要用于展示         
        
 3. 结构化时间：
 
@@ -3579,25 +3675,22 @@ time.time() # 结果是秒，是1970年1月1日0时0分(unix元年，诞生的�
     res1 = time.gmtime()   # -> 世界标准时间，格林尼治时间
     print(res)
 
-tm_year=2021  -> 年
-tm_mon=1      -> 月 
-tm_mday=6     -> 日
-tm_hour=15    -> 时
-tm_min=53     -> 分 
-tm_sec=48     -> 秒
-tm_wday=2     -> 一年中的第几周
-tm_yday=6     -> 一年中的第几天
-tm_isdst=0    -> 是否夏令时，0表示否
+tm_year=2021  -> 年  
+tm_mon=1      -> 月   
+tm_mday=6     -> 日  
+tm_hour=15    -> 时  
+tm_min=53     -> 分   
+tm_sec=48     -> 秒  
+tm_wday=2     -> 一年中的第几周  
+tm_yday=6     -> 一年中的第几天  
+tm_isdst=0    -> 是否夏令时，0表示否  
     
-以上可以单独取出
-`print(res.tm_year)`
-`print(res.tm_sec)`
-
+以上可以单独取出   
+`print(res.tm_year)`   
+`print(res.tm_sec)`   
 获取当前时间的某一部分       
 
-
-**三种格式时间的转换**
-
+**三种格式时间的转换**   
 ```
 格式化时间----------->结构化时间---------->时间戳
          strptime()            mktime()
@@ -3641,19 +3734,21 @@ time.process_time() # 返回当前进程的系统和用户CPU时间总和的值�
 #### 打印进度条
 
 基本进度条：   
-   import time
-   res = ''
-   for i in range(50):
-       res += '#'
-       time.sleep(0.5)
-       print('\r[%-50s]' % res, end='')
-   print()
+
+    import time
+    res = ''
+    for i in range(50):
+        res += '#'
+        time.sleep(0.5)
+        print('\r[%-50s]' % res, end='')
+    print()
 
 下载进度条：依据下载的量与总量的百分比控制'#'的数量    
 伪代码
-   接收数据 = num_rec
-   总数据 = num_tot
-   while num_rec < num_tot:
+
+    接收数据 = num_rec
+    总数据 = num_tot
+    while num_rec < num_tot:
         time.sleep(0.3) # 模拟网速
         num_rec += 每次接收的数据大小（例如1024字节）
         # print(num_rec)  # 打印了累计的下载量，此处改成进度条格式
@@ -3679,21 +3774,23 @@ time.process_time() # 返回当前进程的系统和用户CPU时间总和的值�
 2. 判断百分比是否大于1，如果大于了1，则percentage = 1
 
 带时间的进度条:
-   import time 
-   scale = 50
-   print("执行开始，祈祷不报错".center(scale // 2, "-"))
-   start = time.perf_counter()
-   for i in range(scale + 1):
-       a = "*" * i
-       b = "." * (scale - i)
-       c = (i / scale) * 100
-       dur = time.perf_counter() - start
-       print("\r{:^3.0f}%[{}->{}]{:.2f}s".format(c, a, b, dur), end="")
-       time.sleep(0.1)
-   print("\n"+"执行结束，万幸".center(scale // 2, "-"))
+
+    import time 
+    scale = 50
+    print("执行开始，祈祷不报错".center(scale // 2, "-"))
+    start = time.perf_counter()
+    for i in range(scale + 1):
+        a = "*" * i
+        b = "." * (scale - i)
+        c = (i / scale) * 100
+        dur = time.perf_counter() - start
+        print("\r{:^3.0f}%[{}->{}]{:.2f}s".format(c, a, b, dur), end="")
+        time.sleep(0.1)
+    print("\n"+"执行结束，万幸".center(scale // 2, "-"))
 
 tpdm进度条模块：      
 通过pip在终端下载该模块，tpdm       
+
     from time import sleep
     from tqdm import tqdm
     # 这里同样的，tqdm就是这个进度条最常用的一个方法
@@ -3708,19 +3805,19 @@ tpdm进度条模块：
 
 ### datetime模块
 
-`import datetime`
-`print(datetime.datetime.now())` # -> 一次获取到格式化的时间
-`print(datetime.datetime.utcnow())` # -> 世界标准时间的格式化时间
+`import datetime`    
+`print(datetime.datetime.now())` # -> 一次获取到格式化的时间  
+`print(datetime.datetime.utcnow())` # -> 世界标准时间的格式化时间  
 
-time模块只有time.time()的返回值可以参与运算，而且单位是秒，相当麻烦     
-如果要求三天后的时间，如何操作？
-`print(datetime.datetime.now() + datetime.timedelta(days=3))`
-datetime.timedelta()接收的参数可以有days,seconds,hours,microseconds等等   
-可以是负数，即往前数多长时间    
+time模块只有time.time()的返回值可以参与运算，而且单位是秒，相当麻烦       
+如果要求三天后的时间，如何操作？  
+`print(datetime.datetime.now() + datetime.timedelta(days=3))`  
+datetime.timedelta()接收的参数可以有days,seconds,hours,microseconds等等     
+可以是负数，即往前数多长时间     
 
-`print(datetime.datetime.fromtimestamp(86400))`
-fromtimestamp方法自动生成格式化时间，但是方式不可改    
-用time模块的话就可以自定义年月日的位置等等     
+`print(datetime.datetime.fromtimestamp(86400))`  
+fromtimestamp方法自动生成格式化时间，但是方式不可改      
+用time模块的话就可以自定义年月日的位置等等      
 
 ### random模块
 
@@ -3770,8 +3867,7 @@ print(make_code(6))
 
 ### os模块
 
-该模块主要提供一种调用操作系统函数的方法        
-`import os`
+该模块主要提供一种调用操作系统函数的方法`import os`    
 
 + 文件操作类(查，增，改，删)
 1. os.getcwd() (常用)获取当前工作目录，即当前python脚本工作的目录路径
@@ -3829,8 +3925,8 @@ print(make_code(6))
 
 ### sys模块
 
-这个模块主要由解释器使用或维护的变量和与解释器进行交互的函数    
-`import sys`
+这个模块主要由解释器使用或维护的变量和与解释器进行交互的函数`import sys`   
+   
 os模块负责程序与操作系统的交互，提供了访问操作系统底层的接口;sys模块负责程序与python解释器的交互，提供了一系列的函数和变量，用于操控python的运行时环境。
 
 1. sys.argv 命令行参数List，把程序使用者的参数存入列表，第一个元素是程序本身路径，即返回值是一个列表，不加()
@@ -3853,7 +3949,7 @@ os模块负责程序与操作系统的交互，提供了访问操作系统底层
 18. sys.copyright 记录python版权相关的东西
 19. sys.api_version 解释器的C的API版本
       
-**python输入输出重定向**
+**python输入输出重定向**   
 stdin,stdout,以及stderr变量包含与标准I/O流对应的流对象。如果需要更好地控制输出，而print不能满足要求，它们就是所需要的。        
 可以重定向输出和输入到其它设备(device)，或者以非标准的方式处理它们
 
@@ -3976,32 +4072,31 @@ t.close()
 ```
 import json
 l = [1, 'aaa', True]
-res = json.dumps(l)
+res = json.dumps(l)  # 以json格式转换
 print(res, type(res))
 ```
 python中可以用单引号表示字符串，但是在json中，只能用双引号表示字符串     
 
 反解json格式：   
-`l_back = json.loads(res)`
+`l_back = json.loads(res)`   
 `print(l_back, type(l_back))`  # 重新得到list类型      
      
-把json格式内容写入文件：
-方法一：   
-`with open('aaa.json', mode='wt', encoding='utf-8') as f:`
-`   f.write(res)`
-方法二：
-`with open('aaa.json', mode='wt', encoding='utf-8') as f:`
-`   json.dump(l, f)`  # 第一个参数是要写入的内容(列表l)，第二个参数是目标位置
-
+把json格式内容写入文件：   
+方法一：先要将aaa.json的内容转换成json格式，写入之后才是json文件     
+`with open('aaa.json', mode='wt', encoding='utf-8') as f:`  
+`   f.write(res)`   
+方法二：不需要转换步骤，直接用.dump方法   
+`with open('aaa.json', mode='wt', encoding='utf-8') as f:`   
+`   json.dump(l, f)`  # 第一个参数是要写入的内容(列表l)，第二个参数是目标位置  
 
 读出json格式内容，并反序列化成python的格式，即列表：     
-`with open('aaa.json', mode='rt', encoding='utf-8') as f:`
-`   res = f.read()`
-`   l = json.loads(res)`
-`   print(l, type(l))`
-json.load()方法
-`l = json.load(f)`
-执行，f.read(),然后执行json.loads() 合并成--> json.load()     
+`with open('aaa.json', mode='rt', encoding='utf-8') as f:`  
+`   res = f.read()`  
+`   l = json.loads(res)`  
+`   print(l, type(l))`  
+json.load()方法   
+`l = json.load(f)`   
+执行，f.read(),然后执行json.loads() 合并成--> json.load()      
 用load方法不需要读取内容，即省略了f.read()这一步        
 
 注意：   
@@ -4015,24 +4110,23 @@ json.load()方法
 #### pickle模块
 
 只有Python可读          
-
-与json类似，基本用法相同：
-`import pickle`
-`pickle.dump()`
-`pickle.dumps()`
-`pickle.load()`
-`pickle.loads()`
+与json类似，基本用法相同： 
+`import pickle`  
+`pickle.dump()`  
+`pickle.dumps()`  
+`pickle.load()`  
+`pickle.loads()`  
 
 #### 猴子补丁
 
 某一软件或包的功能不能满足自己的需求，自行定制该功能，并替换掉原功能，就是猴子补丁
 在首次导入的位置进行修改，或者在软件包的入口文件(执行文件)中            
 
-   import json
-   import ujson
+    import json
+    import ujson
 
-   json.dumps = ujson.dumps
-   json.loads = ujson.loads
+    json.dumps = ujson.dumps
+    json.loads = ujson.loads
 
 还可以做成一个功能：
 ```
@@ -4050,6 +4144,7 @@ monkey_patch_json() # 在入口文件中加入即可
 注意：配置文件不应当很大    
         
 配置的基本格式：test.ini     
+
     # 注释1
     ; 注释2
 
@@ -4510,6 +4605,7 @@ print(obj.findall('abc123eeee')) #['12'],重用了obj
 4. lib：存放各程序共用的功能，模块、包等均可放入，例如common.py
 5. core：存放核心代码的逻辑，例如src.py，start.py只负责启动
 6. api:各种接口文件，提供数据操作
+    
 还需要有以下文件：   
 1. setup.py用于安装
 2. requirement.txt用于列出所需库
@@ -4526,21 +4622,21 @@ python可以直接导入文件夹，但是相对导入不能跳出执行文件�
     
 因此，只能使用绝对路径
 
-   /# /bin/start.py
-   import sys
-   sys.path.append(r'xx/x/xx/')
+    # /bin/start.py
+    import sys
+    sys.path.append(r'xx/x/xx/')
 
-   import src
-   src.run()
+    import src
+    src.run()
 
 这样会把添加的环境变量写死，而且如果项目文件夹多，不利于导入       
         
 应该把项目文件夹加入环境变量中   
-`sys.path.append(r'项目文件夹路径')`
+`sys.path.append(r'项目文件夹路径')`   
 这样，即使文件夹内的其他文件之间的调用也可以直接从项目文件夹开始找     
      
 如何把项目文件夹的路径也写活？   
-`print(__file__)`
+`print(__file__)`  
 这里的__file__变量存储的是当前文件的绝对路径        
         
     import os
