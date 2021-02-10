@@ -4785,13 +4785,239 @@ python3.5之前用这个，兼容python2，3.5以后提供了pathlib包，更方
 
 # 面向对象编程
 
-面向过程的程序设计：  
+## 基本概念  
+
+程序就是用功能来处理数据，功能就是函数，数据就是变量。  
+面向对象是一种编程范式，对于一些不提供面向对象编程的语言，可以按照这种思想来编写，都会有一种机制来对应  
+
+**面向过程的程序设计：**  
 核心是过程二字，过程指的是解决问题的步骤，即先干什么再干什么......   
 面向过程的设计就好比精心设计好一条流水线，是一种机械式的思维方式。  
 
-面向对象的程序设计：  
-核心是对象二字，对象是容器
-变量是数据
+缺点是：一套流水线或者流程就是用来解决一个问题，生产汽水的流水线无法生产汽车，即便是能，也得是大改，改一个组件，牵一发而动全身。
+
+应用场景：一旦完成基本很少改变的场景，著名的例子有Linux內核，git，以及Apache HTTP Server等。
+  
+**面向对象的程序设计：**  
+核心是对象二字，对象是容器-->存放一个类的特征，属性，功能。  
+将大量的数据和功能整合到一起  
+归纳：具体--> 抽象  
+演绎：抽象--> 具体  
+地球上，本来没有人这个类，没有动物这个类。有了之后，人类开始观察，也就是通过逻辑上的归纳法，总结出了人类共有的一些特征，比如有一个脑袋，两只手，两条腿，可以制作工具等等。好了，把共有的特征归纳为一类，就是人类。  
+在程序中，是先定义类，也就是先总结出你的程序哪些数据，功能（函数）属于一类，基于这个类在造出具体的东西，就是对象。   
+
+优点是：解决了程序的扩展性。对某一个对象单独修改，会立刻反映到整个体系中，如对游戏中一个人物参数的特征和技能修改都很容易。
+
+缺点：
+
+1. 编程的复杂度远高于面向过程，不了解面向对象而立即上手基于它设计程序，极容易出现过度设计的问题。一些扩展性要求低的场景使用面向对象会徒增编程难度，比如管理linux系统的shell脚本就不适合用面向对象去设计，面向过程反而更加适合。
+2. 无法向面向过程的程序设计流水线式的可以很精准的预测问题的处理流程与结果，面向对象的程序一旦开始就由对象之间的交互解决问题，即便是上帝也无法准确地预测最终结果。于是我们经常看到对战类游戏，新增一个游戏人物，在对战的过程中极容易出现阴霸的技能，一刀砍死3个人，这种情况是无法准确预知的，只有对象之间交互才能准确地知道最终的结果。
+
+应用场景：需求经常变化的软件，一般需求的变化都集中在用户层，互联网应用，企业内部软件，游戏等都是面向对象的程序设计大显身手的好地方
+
+类内的所有数据统称为属性，分为两种：一是数据属性，二是函数属性（称为方法）  
+
+## 语法
+
+基本原则：先定义类，在调用类产生对象
+```
+class 类名：
+
+    变量1
+    变量2
+
+    def 功能1():
+        pass
+    def 功能2():
+        pass
+
+a = 类名(参数)
+# a即为产生的具体对象
+```
+类名推荐驼峰体命名  
+
+类是在定义时候运行的  
+```
+class Student:
+    print("--->")
+# 运行可看到结果
+```
+运行后，产生类的名称空间，并且这个名称空间是*局部*的
+
+类的名称空间是定义阶段就产生，函数的名称空间是调用阶段产生  
+查看类的名称空间(字典)：`print(Student.__dict__)`   
+
+**访问类内的变量及功能**   
+```
+class Student:
+    stu_name = 'abc'
+    def tell_stu_school():
+        pass
+# 可以根据类的名称空间字典来读取类的内容
+print(Student.__dict__['stu_name'])
+print(Student.__dict__['tell_stu_schoo'])
+
+# 更简单的方法，用类.变量/功能来调用类的功能
+print(Student.stu_name)  # 本质上就是调用Student.__dict__['stu_name']
+print(Student.tell_stu_school)
+```
+
+**创建类的对象--类的实例化**
+类中存的是共有的，实例存的是独有的，但是自带了所有共有的内容   
+类中的变量称为属性，功能称为方法，换一个说法，本质还是变量与函数    
+```
+class Student:
+    stu_name = 'abc'
+    def tell_stu_school():
+        pass
+
+stu1_obj = Student()
+print(stu1_obj.stu_name)
+print(stu1_obj.__dict__) # 这个字典是空的？实例中的字典只保存实例独有的属性
+```
+stu1_obj就是这个类的具体表现，它拥有类定义的属性和功能   
+定制自己的对象，增加实例字典内容  
+`stu1_obj.__dict__['stu_age'] = 18`  
+`stu1_obj.__dict__['stu_gender'] = male`    
+`print(stu1_obj.__dict__)`  
+
+简化方法：本质上还是操作字典   
+`stu1_obj.stu_name = 'edg'`  
+`stu1_obj.stu_age = 18`  
+`stu1_obj.stu_gender = 'male'`  
+
+注意：实例创建好之后，类与实例不在是同一个东西了   
+再创建第二个对象：  
+```
+stu2_obj = Student()  
+print(id(Student))
+print(id(stu1_obj))
+print(id(stu2_obj))
+```
+
+## 类的__init__方法
+
+每个实例都应当有自己的属性，而类可以只提供一个模板，可以以此来传入不同的参数   
+也可以在模板的基础上新增一些属性   
+调用类并接收其返回值的过程又叫实例化  
+
+无模板新增属性
+```
+stu2_obj.stu_name = 'edg'
+stu2_obj.stu_age = 18
+stu2_obj.stu_gender = 'male'
+```
+
+python中提供了初始化的init方法，简化了这一过程
+```
+class Student:
+    def __init__(self, name, age, gender):
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+    def tell_stu_school(self):
+        pass
+```
+其中的self就是实例的名字，例如stu1_obj, stu2_obj   
+self只是约定俗成的用法，并非强制性要求   
+  
+```
+# 新的实例化方法
+stu1_obj = Student('abc', 18, 'male')
+stu2_obj = Student('efg', 19, 'female')
+```
+该init方法在调用类的时候自动运行，给实例传参，并自动将对象当作第一个self的参数传入  
+
+**实例化小结**  
+1. 调用类时会先产生一个空对象
+2. 自动调用类中的__init__方法，把实例化过程中括号内的参数传给__init__方法
+3. 把初始化好的对象当作返回值返回
+
+**init方法小结**  
+1. 会在调用类时自动触发运行，用来为对象初始化自己独有的数据
+2. \__init__内应该存放的是对象的初始化属性功能，但是可以存放任意其他代码，想要在类调用时就立刻执行的代码都可以放到该方法内
+3. 该方法必须返回None，不可用return返回其他值
+
+## 属性查找问题与绑定方法
+
+**类的数据属性：**
+```
+class Student:
+    stu_school = 'nau'
+    def __init__(self, name, age, gender):
+        self.name = name
+        self.age = age
+        self.gender = gender
+
+    def tell_stu_school(self):
+        pass
+
+    def set_info(self, x, y, z):
+        self.name = x
+        self.age = y
+        self.gender = z
+
+stu1_obj = Student('lilei', 18, 'male')
+print(stu1_obj.name)
+print(stu1_obj.stu_school)
+```
+stu1_obj.name这个属性在实例里面存在，就从实例中查找  
+stu1_obj.stu_school实例中不存在，就从类中查找  
+
+下面定义多个实例  
+```
+stu2_obj = Student('hanmeimei', 19, 'female')  
+stu3_obj = Student('poly', 17, 'male')  
+
+print(stu2_obj.stu_school)
+print(stu3_obj.stu_school)
+
+print(id(Student.stu_school))
+print(id(stu1_obj.stu_school))
+print(id(stu2_obj.stu_school))
+print(id(stu3_obj.stu_school))  # id相同，指向同一地址
+
+Student.stu_school = 'NAU'
+print(id(Student.stu_school))
+print(id(stu1_obj.stu_school))
+print(id(stu2_obj.stu_school))
+print(id(stu3_obj.stu_school))  # id相同，指向同一地址
+
+stu1_obj.stu_school = 'nnn'
+print(id(Student.stu_school))
+print(id(stu1_obj.stu_school))  # 当前实例产生了一个新属性，并且独有，与类无关
+print(id(stu2_obj.stu_school))
+print(id(stu3_obj.stu_school))  
+```
+注意：init方法是每调用一次就执行一次，所以，实例化三次就运行了三次   
+
+**类的函数属性：绑定给对象使用**  
+```
+# 按照函数的规则来严格传参，第一个是实例对象
+Student.set_info(stu1_obj, 'aaa', 11, 'male') 
+
+# 通过实例来调用类中的函数叫做绑定方法
+print(Student.set_info)
+print(stu1_obj.set_info) # 地址不同
+print(stu2_obj.set_info) # 地址不同
+print(stu3_obj.set_info) # 地址不同
+
+```
+通过类的绑定方法，可以直接用实例调用类中的功能，不必使用'类.方法名'的方式来调用  
+第一个参数即为实例名  
+该功能的原来的位置还是在类中，各实例得到了该功能的地址，但是谁调用把谁当作第一个参数传入   
+用法与普通函数是一样的   
+注意：但凡在类中定义的函数，都需要固定的第一个参数，就是self，用来接收实例对象  
+
+在python当中，一切皆对象，指的是类型也是一个类   
+例如list是一个类型，也是一个类   
+`l = ['aa', 'bb', 'cc']`本质上是`l = list(['aa', 'bb', 'cc'])`  
+同样地，可以通过`l.方法`的方式来调用类中的方法，例如`l.append('dd')`就是把实例当作第一个参数自动传入      
+也可以`list.append(l, 'dd')`，这种方法就需要传入实例对象参数。   
+
+
+
 
 
 
