@@ -127,14 +127,23 @@
 
 
 
-dic1 = {"name": "xiaoming", "age": 27}
-dic2 = {"gender": "male"}
-dic1.update(dic2)
-print(dic1)
-# dic2["gender"] = "female"
-print(dic1.get("gender"))
-print(dic2.get("gender"))
-print(id(dic1.get("gender")))
-print(id(dic2.get("gender")))
+# dic1 = {"name": "xiaoming", "age": 27}
+# dic2 = {"gender": "male"}
+# dic1.update(dic2)
+# print(dic1)
+# # dic2["gender"] = "female"
+# print(dic1.get("gender"))
+# print(dic2.get("gender"))
+# print(id(dic1.get("gender")))
+# print(id(dic2.get("gender")))
 
+# a = 1
+# print(type(a))
+
+name = 'xxx'
+l1 = ['aaa', name]
+# print(l1[1])
+name = 'bbb'
+print(l1[1])
+print(name)
 
