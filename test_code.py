@@ -1,3 +1,37 @@
+a = 1
+b = 2
+c = a + b
+print(c)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # with open('aaa.txt', mode='wt', encoding='utf-8') as f:
 #     l = ['aaa', 'bbb', 'ccc']
 #     for i in l:
@@ -140,10 +174,10 @@
 # a = 1
 # print(type(a))
 
-name = 'xxx'
-l1 = ['aaa', name]
+# name = 'xxx'
+# l1 = ['aaa', name]
+# # print(l1[1])
+# name = 'bbb'
 # print(l1[1])
-name = 'bbb'
-print(l1[1])
-print(name)
+# print(name)
 
