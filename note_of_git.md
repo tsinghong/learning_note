@@ -1,5 +1,8 @@
-
 # GIT 使用概述
+
+为什么要使用版本控制？
+1. 多人协同开发
+2. 保留修改的历史记录，方便回退版本，尤其是当代码出现bug时
 
 版本控制：可以解决多人协同开发，也可以保留修改的历史记录
 
@@ -8,27 +11,37 @@
 
 git-->分布式
 
-# 安装
+## 安装
 
 LINUX:Ubuntu为例
 `$ sudo apt-get install git`
 
 windows:      
 直接官网下载并安装           
+[下载地址](https://git-scm.com/)  
 建议不要使用图形版，因为难以看懂       
 更新：`git update-git-for-windows`       
 ps:不翻墙容易出错
 
+## 基本概念  
+1. 工作区：写代码的文件夹  
+2. 版本库：  
+   + 暂存区：暂时存放修改好的代码
+   + 代码库：确定修改好之后的代码就可以提交到代码库
+   + 远程仓库：把代码存放在云端
+      - github(国外)
+      - gitee(国内)
+
 # 本地操作
 
 基本流程:     
-创建仓库 --> 在工作区编写文件，包括文件的增删改 --> 把修改提交到暂存区 --> 把暂存区的修改提交到仓库
+在文件夹创建仓库 --> 在工作区编写文件，包括文件的增删改 --> 把修改提交到暂存区 --> 把暂存区的修改提交到仓库 --> 提交到云端
 
 ## 创建仓库
 
 1. 新建文件夹test
 2. linux输入git init --> ls -l -->可以发现新创建了一个.git文件夹
-3. windows右键-->git bash here-->git init-->创建了一个.git文件夹
+3. windows右键-->git bash here-->git init-->创建了一个.git文件夹(默认隐藏)
 
 *注意：是在当前工作目录创建，可用pwd命令查看*
 
@@ -42,8 +55,7 @@ ps:不翻墙容易出错
 6. git add test.txt
 7. git commit -m 'version0.2' --> 有两个版本
 
-git记录的是修改的内容
-后面的版本依赖于前面的版本
+git记录的是修改的内容，后面的版本依赖于前面的版本
 ![描述1](image/1.png)
 
 ## 查看版本
@@ -56,7 +68,6 @@ git记录的是修改的内容
 ## 版本回退
 
 1. 创建好一个新的版本后，默认会有一个HEAD指向当前版本
-
 ![HEAD](image/2.png)
 
 2. HEAD之前版本的表示方法：
@@ -65,13 +76,13 @@ git记录的是修改的内容
 
 3. git reset --hard HEAD^ --> 回到版本1，即指针指向了版本1
 ![版本回退](image/3.png)   
-
 git log 查看版本信息，可以看到只有一个版本，但是版本2并没有删掉
+记住：--hard是将已经commit的记录回退
 
 4. 如何回到版本2？此时已无法使用HEAD，HEAD只可以用于之前的版本回退
 使用版本号来回退，版本好就是git log后出现的commit后面的内容
-版本号很长，用前几个即可
-git reset --hard [版本号]
+版本号很长，用前几个即可  
+`git reset --hard [版本号]`
 
 ![版本回退](image/4.png)
 
@@ -81,48 +92,40 @@ git reset --hard [版本号]
       
 git reflog --> 查看操作记录，最前面一栏即为版本号
 
-总结：
-1. 每次git add + git commit 都会创建一个版本，并且HEAD位于新版本上
-2. 使用git log查看版本，git reflog查看操作记录
-3. 并使用git reset --hard [版本号]/HEAD 来回退版本
-
 ## 工作区与暂存区
 
 文件所在的文件夹即为工作区，即git init的文件夹        
-
 该文件夹中的.git目录为git的版本库，其中最重要的就是称为stage/index的暂存区           
+默认的分支为master分支，在git2.23版本以后默认分支改为main分支              
 
-默认的分支为master分支            
-
-工作区与暂存区的关系如下图：
+**工作区与暂存区的关系如下图：**
 ![工作区与暂存区](image/5.png)
 
 *可以多次add，然后一次性commit*          
-commit的就是一次性把暂存区的所有修改记录记录成版本         
+add的作用就是把修改放入到暂存区中   
+commit的就是一次性把暂存区的所有修改记录放入版本库中         
 
-查看工作区的状态
-`git status`
+查看工作区的状态`git status`
 如果对工作区的文件进行了修改，就可以知道哪些文件被修改，新增了哪些（显示未跟踪）     
-
 注意：git add后可以加多个文件，也可以加目录，即可以把整个目录的修改都保存           
 比较常用的有`git add .`即把当前目录的修改都放入暂存区            
-
 一旦提交后，如果你又没有对工作区做任何修改，那么工作区就是“干净的”         
 
-注意：如果修改文件后，不用add将修改放入暂存区，commit的时候就不会记录该修改          
+**注意：如果修改文件后，不用add将修改放入暂存区，commit的时候就不会记录该修改**            
 也就是说，commit只记录暂存区的修改，任何没有加入到暂存区的修改都不会被记录            
 
-**丢弃改动**        
-`git checkout -- [文件名]`
+## 丢弃改动
 
-如果已经把改动后的加入到暂存区，就需要以下命令来取消暂存
-`git reset HEAD [文件名]`
-通过git status可以发现文件已经被取消暂存，可以用git checkout来放弃改动
+1. 尚未add(放入暂存区)及commit(放入版本库)丢弃改动：`git checkout -- [文件名]`
+
+2. 如果已经把改动后的加入到暂存区，就需要以下命令来取消暂存`git reset HEAD [文件名]`
+  
+通过`git status`可以发现文件已经被取消暂存，可以用git checkout来放弃改动
 
 ## 对比文件
 
-对比工作区和某个版本文件的不同
-git diff HEAD -- [文件名(工作区中的文件)]
+对比工作区和某个版本文件的不同   
+`git diff HEAD -- [文件名(工作区中的文件)]`
 
 1. 减号（－）对应着HEAD文件
 2. 加号（＋）对应着工作区中的文件
@@ -140,7 +143,7 @@ git diff HEAD -- [文件名(工作区中的文件)]
 在工作区中删除某个文件后，可以使用git checkout来丢弃修改          
 
 如果确实删除文件，先删除文件，然后使用如下命令         
-`git rm [文件名]`
+`git rm [文件名]`  
 把删除修改添加到暂存区       
 `git commit -m '说明'`        
 
@@ -149,77 +152,63 @@ git log --pretty=oneline
 
 ## 分支
 
-**查看分支**      
-`git branch`
-创建并切换分支
-`git checkout -b dev`
-再次查看分支可以看到有两个分支              
+在开发过程中，通常是一边运营一边修改，在项目上线之后，主分支(master/main)分支运行的是稳定版本，一般不动  
+这时要新增或删除功能怎么办？  
+这个时候就需要分支功能，在主分支之外新建一个分支来继续开发，待测试稳定再合并入主分支  
+
+1. 查看分支：`git branch`
+2. 创建并切换分支：`git checkout -b dev`，再次查看分支(git branch)可以看到有两个分支              
+
+建议：使用git2.23以后版本使用的swich命令可以区分checkout的不同，因为checkout也可以表示取消修改  
 
 本质上，分支是创建了一个新的指针，不影响原指针的位置         
 把HEAD指针指向新创建的分支上         
-
 此后，所有的修改操作均在新分支上进行，不会对原纪录产生任何影响
 查看：git log --pretty=oneline
 
-**切换分支**
-git checkout master
+**切换分支**   
+`git checkout master`   
 直接让HEAD重新指向master
-此时可以把dev分支上的内容合并到master分支上
 
-在git的2.23版本以后，切换分支可以使用switch
-`git switch <分支名> # 切换分支 `
-`git switch -c <分支名> # 创建并切换分支`
-可以把-c理解为create
-
+在git的2.23版本以后，切换分支可以使用switch   
+`git switch <分支名> # 切换分支 `   
+`git switch -c <分支名> # 创建并切换分支`  
+可以把-c理解为create  
 
 **合并操作**   
 `git merge dev`
-快速合并(fast-forward)，把master指针连同HEAD指向dev的位置
+记住：在合并之前把当前分支切换到主分支上，然后把dev分支上的内容合并到master分支上 
+快速合并(fast-forward)，把master指针连同HEAD指向dev的位置   
 可以使用快速合并时默认使用快速合并
 
 合并之后可以删除dev分支        
-`git branch -d dev`
-即直接删除dev的指针
-
-***总结：***
-1. 查看 git branch
-2. 创建分支 git branch [name]
-3. 切换分支 git checkout [name]
-4. 创建并切换 git checkout -b [name]
-5. 合并某分支到当前分支 git merge [name]
-6. 删除分支 git branch -d [name]
+`git branch -d dev`   
+即直接删除dev的指针  
 
 ![分支流程](image/6.png)
 ![分支流程](image/7.png)
 ![分支流程](image/8.png)
 ![分支流程](image/9.png)
 
+### 冲突
 
-### 解决冲突
-
-两个分支都对**同一个文件**进行了修改并提交
-如果对不同的文件进行修改不会产生冲突
-![冲突产生](image/10.png)
-
-如果执行git merge dev就会报错，并指出哪个文件发生了冲突
-
-git status也会指出冲突发生的位置
+冲突的产生：两个分支都对**同一个文件**进行了修改并提交就会出现冲突   
+如果对不同的文件进行修改不会产生冲突   
+![冲突产生](image/10.png)  
+如果执行git merge dev就会报错，并指出哪个文件发生了冲突   
+git status也会指出冲突发生的位置   
 
 **解决方法**
-打开产生冲突的文件，可以看到冲突的内容
-然后对其进行修改并提交，产生一个新的版本即可解决冲突
+打开产生冲突的文件，可以看到冲突的内容   
+然后对其进行修改并提交，产生一个新的版本即可解决冲突   
+![解决冲突](image/11.png)   
 
-![解决冲突](image/11.png)
-
-查看分支图
-`git log --graph --pretty=oneline`
+查看分支图`git log --graph --pretty=oneline`
 
 ### 分支管理策略
 
 快速合并时，直接移动指针          
-
 有时，快速合并不能成功，但是又没有冲突，这时合并会做一次新的提交       
-
 但是这种模式下删除分支后会丢掉分支的信息          
 
 例：
@@ -230,9 +219,9 @@ git status也会指出冲突发生的位置
 5. 出现弹窗后提示输出信息
 6. 这个界面表示git做了一次新的提交，而不是快速合并
 
-有时需要禁用fast-forward来保存dev分支的记录！
-`git merge --no-ff -m '说明信息' dev`
-对比一下默认的快速合并模式
+有时需要禁用fast-forward来保存dev分支的记录！   
+`git merge --no-ff -m '说明信息' dev`  
+对比一下默认的快速合并模式   
 `git merge dev`
 
 ### bug分支
@@ -243,27 +232,30 @@ git status也会指出冲突发生的位置
 1. 当前正在dev分支上进行开发，但是软件运行过程中发现bug需要立即修复
 2. 因当前dev分支上的开发工作尚未完成无法提交
 
-`git stash  --> 保存当前工作区`
+`git stash  --> 保存当前工作区`   
 `git status  --> 发现工作区干净了`
 
 操作流程：
-   回到master分支并创建一个临时bug分支
-   git checkout master
-   git checkout -b bug-001
-   修复bug之后
-   git add [文件名]
-   git commit -m '修复bug001'
 
-   回到master分支并合并，需要禁用ff
-   git checkout master
-   git merge --no-ff -m '修复bug001' bug-001  --> 删除bug-001后不会丢信息
+    回到master分支并创建一个临时bug分支
+    git checkout master
+    git checkout -b bug-001
+    修复bug之后
+    git add [文件名]
+    git commit -m '修复bug001'
+ 
+    回到master分支并合并，需要禁用ff
+    git checkout master
+    git merge --no-ff -m '修复bug001' bug-001  --> 删除bug-001后不会丢 信息
 
-   回到dev
-   git checkout dev
-   git status  --> 发现是干净的
-   git stash list --> 列出保存的工作现场
-   如何回复工作现场
-   git stash pop
+    回到dev
+    git checkout dev
+    git status  --> 发现是干净的
+    git stash list --> 列出保存的工作区
+    如何回复工作现场
+    git stash pop
+
+`git stash`保存的是当前工作的分支  
 
 ## rebase变基 --可选操作//TODO
 
@@ -279,33 +271,27 @@ git log容易变得冗长
 
 # 远程操作 
 
-远程操作：备份，共享
+远程操作作用：备份，共享
 
 `gitignore:在github中，选择某一语言，会自动创建需要忽略跟踪的文件`
 
 ## 配置git
 
-项目的配置：
-.git文件夹中的config文件
+项目的配置：.git文件夹中的config文件
 
-查看配置
-`git config --list`
+1. 查看配置：`git config --list`
+2. 设置用户名：`git config --global user.name 'xxx'`
+3. 设置用户名邮箱：`git config --global user.email 'xxx@xx.com'`
+4. 设置远程推送网址：`git remote add <url>`
 
-设置用户名
-`git config --global user.name 'xxx'`
-
-设置用户名邮箱
-`git config --global user.email 'xxx@xx.com'`
-
-设置远程推送网址
-`git remote add <url>`
+以上的global均可以换成local，此时这些配置只对当前文件夹有效
 
 ## ssh模式 --> 可选
 
 把本机ssh公钥保存至github账户中      
 
-如何生成ssh公钥     
-linux中
+如何生成ssh公钥？       
+linux中：
 1. 进入用户家目录编辑.gitconfig，即git的配置文件，里面保存了github账户名和邮箱地址
 2. 执行命令ssh-keygen -t rsa -C '邮箱地址'
 该命令生成一个文件夹.ssh，其中有三个文件：id_rsa、id_rsa.pub、known_hosts        
@@ -314,40 +300,43 @@ linux中
 
 ## 克隆项目
 
-`git clone [ssh方式/HTTPS方式]`
-该命令会在当前目录下新建一个目录，把内容全部放在新目录中
+克隆一个项目就是下载云端的代码库  
+`git clone [ssh方式/HTTPS方式]`   
+该命令会在当前目录下新建一个目录，把内容全部放在新目录中  
 
-克隆出错执行下面的命令(linux)
-`eval "$(ssh-agent -s)"`
-`ssh-add`
+克隆出错执行下面的命令(linux)  
+`eval "$(ssh-agent -s)"`   
+`ssh-add`   
 
 ## 上传分支
 
 通常不在master分支上进行开发，新建一个自己的分支进行开发          
-
 先在本机上进行开发并提交版本           
 
 **推送至github**  
-`git push origin [分支名称]`
-例：git push origin dev
-*origin代表的是远程分支*
-如果远程没有dev分支，则新建一个
+`git push origin [分支名称]`  
+例：git push origin dev  
+*origin代表的是远程分支*  
+如果远程没有dev分支，则新建一个   
 
-*将本地分支跟踪远程分支*
-跟踪之后，本地提交与远程的不一样会有提示
-`git branch --set-upstream-to=origin/dev dev`
-这里的最后一个dev与前面的origin/dev分别代表本地分支和远程分支
-`git status`
+*将本地分支跟踪远程分支*  
+跟踪之后，本地提交与远程的不一样会有提示  
+`git branch --set-upstream-to=origin/dev dev`  
+这里的最后一个dev与前面的origin/dev分别代表本地分支和远程分支  
+`git status`  
 
 *跟踪之后，使用git push后面不用加远程分支名*        
 
 如果push报错：修改.git/config文件           
 将
-   [remote "origin"]
-   url = "https://github.com/用户名/仓库名.git
+
+    [remote "origin"]
+    url = "https://github.com/用户名/仓库名.git
+
 修改为
-   [remote "origin"]
-   url = "https://用户名:密码@github.com/用户名/仓库名.git
+
+    [remote "origin"]
+    url = "https://用户名:密码@github.com/用户名/仓库名.git
 
 ## 远程分支拉取代码
 
@@ -403,11 +392,6 @@ gitlab在国内访问比较快，可以通过gitlab来下载github的项目
 
 
 # 总结
-
-**三个区域**
-+ 工作区
-+ 暂存区
-+ 版本库
 
 ![区域切换](image/区域切换.png)
 
