@@ -1,6 +1,6 @@
+
 {
   "vim.easymotion": true,
-  "vim.sneak": true,
   "vim.incsearch": true,
   "vim.useSystemClipboard": true,
   "vim.useCtrlKeys": true,
@@ -25,11 +25,9 @@
   "vim.handleKeys": {
     "<C-a>": false,
     "<C-f>": false
-  },
-  "files.associations": {
-    "stdio.h": "c"
   }
 }
+
 
 /* {
 // 控制字体系列。 

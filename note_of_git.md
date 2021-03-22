@@ -345,19 +345,14 @@ linux中：
 # github
 
 *github基本概念：*
-
-repository:仓库
-
-star:收藏
-
-fork:复制克隆项目-->将别人的仓库完整复制到自己的仓库中，标记为forked from xx/x仓库
+1. repository:仓库
+2. star:收藏
+3. fork:复制克隆项目-->将别人的仓库完整复制到自己的仓库中，标记为forked from xx/x仓库
 fork的仓库独立存在，在自己的仓库做任何修改不影响被fork的仓库
 可以通过自己的仓库向原仓库发起*pull request*
 如果原仓库作者同意，可以合并到原仓库
-
-watch:关注 --> 项目有更新会提示，类似朋友圈
-
-issue:问题 --> 发现代码BUG，但没有成型代码，需要讨论
+4. watch:关注 --> 项目有更新会提示，类似朋友圈
+5. issue:问题 --> 发现代码BUG，但没有成型代码，需要讨论
 
 sign in:登陆
 
