@@ -84,4 +84,55 @@
 # print('my age is %d' % "18")
 
 
-print('{0:*<10}'.format('开始执行')) # 开始执行******
+# print('{0:*<10}'.format('开始执行')) # 开始执行******
+
+# your_score = input("请输入你的考试分数：")
+# your_score = int(your_score)
+# if your_score > 60:
+#     print("奖励手机一部")
+# else:
+#     print("不及格还想要手机？回去学习！")
+
+
+# your_score = input("请输入你的考试分数：")
+# your_score = int(your_score)
+# if your_score > 60:
+#     print("奖励手机一部")
+# if your_score > 80:
+#     print("奖励自行车一辆")
+# print("这是if以外的代码")
+
+
+
+# your_score = input("请输入你的考试分数：")
+# your_score = int(your_score)
+
+# # 这回奖励要缩水了，只有一个奖励，但是价值越来越高^_^
+# if your_score > 90:
+#     print("优秀！奖励手机一部")
+# elif your_score > 80:
+#     print("还行吧，奖励手环一个")
+# elif your_score > 60:
+#     print("刚及格，奖励鲜花一朵")
+# else:
+#     print("不及格还想要手机？回去学习！")
+
+# while True:
+    # print("正在运行！")
+
+# lst = [1, 2, 'aaa', 'bbb']
+# for i in lst:
+#     print(i)
+
+for i in range(10):
+    print("正在运行第%s次" % i)
+
+
+
+
+
+
+
+
+
+
