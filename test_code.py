@@ -124,8 +124,13 @@
 # for i in lst:
 #     print(i)
 
-for i in range(10):
-    print("正在运行第%s次" % i)
+# for i in range(10):
+    # print("正在运行第%s次" % i)
+
+f = open('a.txt')
+res = f.read()
+print(res)
+f.close()
 
 
 
