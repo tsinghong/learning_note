@@ -2009,7 +2009,7 @@ print(res)
 这里使用了文件的.read()方法来读出其中的内容，并存放在变量res中  
 然后就可以打印出来知道其中的内容了   
 上面的例子把文件`a.txt`放在了执行文件的根目录下，所以可以省略掉前面的路径  
-如果我想打开计算机中其他位置的文件应该怎么办？  
+如果想打开计算机中其他位置的文件应该怎么办？  
 所以，我们要引入文件路径的概念  
 
 **文件路径**
@@ -2026,11 +2026,11 @@ print(res)
    + 举例：一个文件的绝对路径是/home/Desktop/aaa/a.txt，那么.a.txt表示文件夹aaa，..a.txt表示文件夹Desktop
 
 windows路径分隔符问题   
-`open('C:\a.txt\nb\c\d.txt')`    
+`open('C:\a\b\c\d.txt')`    
 解决方案一：字符串前加上'r'，表示原始字符串，不含任何转义，推荐   
-`open(r'C:\a.txt\nb\c\d.txt')`   
+`open(r'C:\a\b\c\d.txt')`   
 解决方案二：open这个功能自动识别    
-`open('C:/a.txt/nb/c/d.txt')`    
+`open('C:/a/b/c/d.txt')`    
 
 解决跨平台路径问题，推荐使用os模块    
 该模块下的path函数用于读取文件/文件夹名称(str类型)     
@@ -2043,7 +2043,7 @@ BASE_PATH = os.path.join("User",
                         "aaa.txt")
 ```
 
-下面继续讲解打开文件   
+下面继续讲解操作文件   
 open()函数会返回一个叫文件对象（file object）的对象，也称为文件句柄    
 这个文件对象是一种变量，归属于这个程序，同样存在于内存空间     
 并且同时映射到硬盘内的具体文件    
@@ -2066,8 +2066,8 @@ open()函数会返回一个叫文件对象（file object）的对象，也称为
 关闭文件：回收操作系统资源--->操作系统打开文件数是一定的   
 `f.close()`      
 但是这个f的变量还是存在的，只是不可以读取      
-因为操作系统打开文件有上限，如果忘了close文件，可能下面的文件就打不开了  
-所以，为了防止这样的情况，Python引入了with关键字来根据上下文打开\关闭文件   
+因为操作系统打开文件有上限，如果忘了close文件，到达上限之后，下面的文件就打不开了  
+所以，为了防止这样的情况，Python引入了with关键字来根据上下文自动打开\关闭文件   
 
 **with:上下文管理，跳出代码块后即关闭文件**
 ```
@@ -2100,17 +2100,23 @@ read方法在读取大文件时容易填满内存
 在调用read方法后，*文件指针*移动，并读出文件内容直到文件结尾     
 此后，在调用read方法将无法读出文件内容     
 ```
-
 ===============案例：输入验证==================
 # 新建一个用于存放用户名和密码的文件user.txt
+# 并输入一下内容
+# lilei:123
+# hanmeimei:321
+# poly:12321
 
 inp_username=input('your name>>: ').strip()
 inp_password=input('your password>>: ').strip()
+# 这里为什么要用.strip()方法？  
+# 因为你在输入的时候，把回车键的符号(\n)也输入了
+# 例如输入lilei，实际上你输入的是lilei\n
 
 # 验证
 with open('user.txt',mode='rt',encoding='utf-8') as f:
     for line in f:
-        # print(line,end='') # egon:123\n
+        # print(line,end='') 
         # strip()去除空白字符，包括\n\t等等
         username,password=line.strip().split(':')
         if inp_username == username and inp_password == password:
@@ -2121,12 +2127,13 @@ with open('user.txt',mode='rt',encoding='utf-8') as f:
 ```
 
 **w模式**          
-只写模式，当文件不存在时会创建空文件，当文件存在会*清空*文件，指针位于开始位置，此时文件不可读，即不可使用read方法，用了就报错      
+只写模式，当文件不存在时会创建空文件，当文件存在会*清空*文件，指针位于开始位置    
+此时文件不可读，即不可使用read方法，用了就报错      
 
 在以w模式打开文件没有关闭的情况下，连续写入，新的内容总是跟在旧的之后
 ```
 with open('d.txt',mode='wt',encoding='utf-8') as f:
-    f.write('这是一句话\n')
+    f.write('这是一句话\n')    # f.write()不会在行尾加入\n
     f.write('这是另一句话\n')
     f.write('这还是一句话\n')
 ```
@@ -2141,10 +2148,10 @@ with open('d.txt',mode='wt',encoding='utf-8') as f:
     f.write('这还是一句话\n')
 ```
 
-案例：文件复制程序：
+案例：文件内容复制程序：
 ```
 src_file=input('源文件路径>>: ').strip()
-dst_file=input('源文件路径>>: ').strip()
+dst_file=input('目标文件路径>>: ').strip()
 with open(r'{}'.format(src_file),mode='rt',encoding='utf-8') as f1,\
     open(r'{}'.format(dst_file),mode='wt',encoding='utf-8') as f2:
     res=f1.read()

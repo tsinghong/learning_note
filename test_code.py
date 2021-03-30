@@ -127,15 +127,41 @@
 # for i in range(10):
     # print("正在运行第%s次" % i)
 
-f = open('a.txt')
-res = f.read()
-print(res)
-f.close()
+# f = open('a.txt')
+# res = f.read()
+# print(res)
+# f.close()
 
+# with open('c.txt', mode='rt', encoding='utf-8') as f:
+#     print("第一次读".center(50, '*'))
+#     res = f.read()
+#     print(res)
+# print("执行完毕")
 
+# input_username = input("请输入用户名： ").strip()
+# input_password = input("请输入密码： ").strip()
 
+# with open('c.txt', mode='rt', encoding='utf-8') as f:
+#     for line in f:
+#         username, password = line.strip().split(':')
+#         if input_username == username and input_password == password:
+#             print("登陆成功")
+#             break
+#     else:
+#         print("用户名或密码错误")
 
+# with open('d.txt', mode='wt', encoding='utf-8') as f:
+#     f.write("这是一句话\n")
+#     f.write("这是另一句话\n")
+#     f.write("这是还一句话\n")
 
+src_file = input("请输入源文件地址：").strip()
+des_file = input("请输入目标文件地址：").strip()
+
+with open(r'{}'.format(src_file),mode='rt',encoding='utf-8') as f1,\
+    open(r'{}'.format(des_file),mode='wt',encoding='utf-8') as f2:
+    res=f1.read()
+    f2.write(res)
 
 
 
