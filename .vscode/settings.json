@@ -25,7 +25,8 @@
   "vim.handleKeys": {
     "<C-a>": false,
     "<C-f>": false
-  }
+  },
+  "python.pythonPath": "E:\\Anaconda3\\python.exe"
 }
 
 
