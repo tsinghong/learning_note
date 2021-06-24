@@ -164,6 +164,7 @@ with open(r'{}'.format(src_file),mode='rt',encoding='utf-8') as f1,\
     f2.write(res)
 
 
+src_file = input("  ")
 
 
 
