@@ -155,16 +155,49 @@
 #     f.write("这是另一句话\n")
 #     f.write("这是还一句话\n")
 
-src_file = input("请输入源文件地址：").strip()
-des_file = input("请输入目标文件地址：").strip()
+# src_file = input("请输入源文件地址：").strip()
+# des_file = input("请输入目标文件地址：").strip()
 
-with open(r'{}'.format(src_file),mode='rt',encoding='utf-8') as f1,\
-    open(r'{}'.format(des_file),mode='wt',encoding='utf-8') as f2:
-    res=f1.read()
-    f2.write(res)
+# with open(r'{}'.format(src_file),mode='rt',encoding='utf-8') as f1,\
+#     open(r'{}'.format(des_file),mode='wt',encoding='utf-8') as f2:
+#     res=f1.read()
+#     f2.write(res)
 
 
-src_file = input("  ")
+# src_file = input("  ")
+
+# msg = "   hello world   "
+# res = msg[0:5]
+# print(res)
+# res = msg[0:5:2]
+# print(res)
+# print(type(len(msg)))
+
+# print(msg.strip("d"))
+
+
+# a = 'abc'
+# print("+".join(a))
+
+
+# print('123'.isdigit())
+# print('12.3'.isdigit())
+# print(list(range(1, 10)))
+
+
+# a = [1, 2, 3, 4, 5, 6]
+# # b = a[:]
+# b = list(a)   # 效果同上
+# a[0] = 100
+# print(b[0])
+
+
+res='我的名字是 {} 我的年龄是 {}'.format('Lilei',18)
+print(res)
+
+res='我的名字是 {0}{0}{0} 我的年龄是 {1}{1}'.format('Lilei',18)
+print(res)
+
 
 
 
