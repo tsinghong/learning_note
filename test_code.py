@@ -192,12 +192,16 @@
 # print(b[0])
 
 
-res='我的名字是 {} 我的年龄是 {}'.format('Lilei',18)
-print(res)
+# res='我的名字是 {} 我的年龄是 {}'.format('Lilei',18)
+# print(res)
 
-res='我的名字是 {0}{0}{0} 我的年龄是 {1}{1}'.format('Lilei',18)
-print(res)
+# res='我的名字是 {0}{0}{0} 我的年龄是 {1}{1}'.format('Lilei',18)
+# print(res)
 
 
-
+a = 'lilei'
+b = 'is'
+c = '18'
+print(a, b, c, sep='|', end='')
+print(a, b, c, sep='|', end='')
 

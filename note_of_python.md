@@ -1204,6 +1204,31 @@ input()函数内的参数是一个字符串，它会被打印出来。通常，�
 
 现阶段，我们用到的主要输出方法均为print()函数，这里主要讲解print()函数要用到的输出方法
 
+### print()函数的基本用法
+
+基本形式：`print(value, ..., sep=' ', end='\n', file=sys.stdout, flush=False)`  
+从上可以看到，print()函数可以接受多个参数，即value   
+
+    a = 'lilei'
+    b = 'is'
+    c = '18'
+    print(a, b, c)
+    print(a, b, c)
+    # ==> lilei is 18
+    # ==> lilei is 18
+
+以上可以看到，三个变量之间默认以空格分开，并且默认以换行(\n)结尾   
+控制分割及结尾的分别是参数sep和end  
+下面我们更改一下试试
+
+    a = 'lilei'
+    b = 'is'
+    c = '18'
+    print(a, b, c, sep='|', end='')
+    print(a, b, c, sep='|', end='')
+    # ==> lilei|is|18
+    # ==> lilei|is|18lilei|is|18
+
 ### 1. %占位符----->效率低，不推荐
 
 值按照位置与%s一一对应，少一个不行，多一个也不行   
@@ -1629,7 +1654,7 @@ else的子代码`代码4`就不会被运行
 
 **for循环**   
 理论上for循环能做的事情，while循环都可以做   
-之所以要有for循环，是因为for循环在循环取值（遍历取值）比while循环更简洁   
+���所以要有for循环，是因为for循环在循环取值（遍历取值）比while循环更简洁   
 语法：
 ```
 for 变量名 in 可迭代对象(iterable):
