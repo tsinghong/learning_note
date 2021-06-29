@@ -199,9 +199,38 @@
 # print(res)
 
 
-a = 'lilei'
-b = 'is'
-c = '18'
-print(a, b, c, sep='|', end='')
-print(a, b, c, sep='|', end='')
+# a = 'lilei'
+# b = 'is'
+# c = '18'
+# print(a, b, c, sep='|', end='')
+# print(a, b, c, sep='|', end='')
+
+
+# f = open('a.txt', mode='wt', encoding='utf-8')
+# print("春眠不觉晓", file=f)
+# f.close()
+
+# a = "我"
+# b = "你"
+# print("今天%s很嗨皮！" % a)
+# print("今天%s很嗨皮！" % b)
+
+
+x = "lilei"
+y = 18
+print(f'我的名字是{x.swapcase()}, 我的年龄是{y+10}')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
