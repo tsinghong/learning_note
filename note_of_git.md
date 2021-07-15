@@ -346,10 +346,62 @@ git log容易变得冗长
 
 在开始远程操作之前，我们的操作都是在本地电脑上完成，如果更换了工作场地，更换了办公电脑等等，就没有办法继续工作了，虽然可以用U盘拷出来，但是不专业。 这里就用到了远程操作，可以把我们的代码统统拉取到新电脑上继续工作。  
 远程操作还可以分享代码，把项目开源，让更多人参与到你的项目中来。    
+这里的远程操作主要用到 GitHub 这个世界上最大的开源代码存储网站  
+当然了，也是最大的同性交友社区...
 
 总结一下远程操作作用：备份，共享
 
+还有一款名为 Gitlab 的开源软件，可以帮助我们自己搭建一个代码托管平台，因为毕竟在 github 上私有仓库是收费的  
+
+## 关于 Github
+
+[github的网址](https://github.com/github)  
+*Github基本概念：*
+1. repository:仓库
+2. star:收藏
+3. fork:复制克隆项目-->将别人的仓库完整复制到自己的仓库中，标记为forked from xx/x仓库
++ fork的仓库独立存在，在自己的仓库做任何修改不影响被fork的仓库
++ 可以通过自己的仓库向原仓库发起*pull request*，如果原仓库作者同意，可以合并到原仓库
+4. watch:关注 --> 项目有更新会提示，类似朋友圈
+5. issue:问题 --> 发现代码BUG，但没有成型代码，需要讨论
+
+sign in:登陆  
+sign up:注册
+
+*开源项目贡献流程*
+
+1. 新建Issue
+2. 发起pull request
+
 `gitignore:在github中，选择某一语言，会自动创建需要忽略跟踪的文件`
+
+## 将本地代码推送至 Github
+
+1. 在本地新建代码库(init -> add -> commit)
+2. 连接远程仓库：`git remote add origin https://github.com/xxx/xxx.git`
+3. 推送本地代码至远程仓库：`git push origin [分支名称]`  
++ 例：git push origin dev  
++ *origin代表的是远程分支*  
++ 如果远程没有dev分支，则新建一个   
+
+*将本地分支跟踪远程分支*  
+跟踪之后，本地提交与远程的不一样会有提示  
+`git branch --set-upstream-to=origin/dev dev`  
+这里的最后一个dev与前面的origin/dev分别代表本地分支和远程分支  
+`git status`  
+
+*跟踪之后，使用git push后面不用加远程分支名*        
+
+如果push报错：修改.git/config文件           
+将
+
+    [remote "origin"]
+    url = "https://github.com/用户名/仓库名.git
+
+修改为
+
+    [remote "origin"]
+    url = "https://用户名:密码@github.com/用户名/仓库名.git
 
 ## ssh模式 --> 可选
 
@@ -373,59 +425,10 @@ linux中：
 `eval "$(ssh-agent -s)"`   
 `ssh-add`   
 
-## 上传分支
-
-通常不在master分支上进行开发，新建一个自己的分支进行开发          
-先在本机上进行开发并提交版本           
-
-**推送至github**  
-`git push origin [分支名称]`  
-例：git push origin dev  
-*origin代表的是远程分支*  
-如果远程没有dev分支，则新建一个   
-
-*将本地分支跟踪远程分支*  
-跟踪之后，本地提交与远程的不一样会有提示  
-`git branch --set-upstream-to=origin/dev dev`  
-这里的最后一个dev与前面的origin/dev分别代表本地分支和远程分支  
-`git status`  
-
-*跟踪之后，使用git push后面不用加远程分支名*        
-
-如果push报错：修改.git/config文件           
-将
-
-    [remote "origin"]
-    url = "https://github.com/用户名/仓库名.git
-
-修改为
-
-    [remote "origin"]
-    url = "https://用户名:密码@github.com/用户名/仓库名.git
-
 ## 远程分支拉取代码
 
 `git pull origin dev  --> 从dev分支拉取代码，并合并到本地所在分支`
 
-# github
-
-*github基本概念：*
-1. repository:仓库
-2. star:收藏
-3. fork:复制克隆项目-->将别人的仓库完整复制到自己的仓库中，标记为forked from xx/x仓库
-fork的仓库独立存在，在自己的仓库做任何修改不影响被fork的仓库
-可以通过自己的仓库向原仓库发起*pull request*
-如果原仓库作者同意，可以合并到原仓库
-4. watch:关注 --> 项目有更新会提示，类似朋友圈
-5. issue:问题 --> 发现代码BUG，但没有成型代码，需要讨论
-
-sign in:登陆  
-sign up:注册
-
-*开源项目贡献流程*
-
-1. 新建Issue
-2. 发起pull request
 
 ## 个人主页
 
