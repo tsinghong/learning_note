@@ -255,6 +255,8 @@ PS:理论上讲，分支的数量是不限的，但是也不要太多
 ![分支流程](image/8.png)
 ![分支流程](image/9.png)
 
+当然了，因为dev分支始终是用于开发，应当保持dev分支的代码是最新的，所以在开发之前，需要把 master 分支的内容合并到 dev 分支上，即`git merge master`  
+
 ### 冲突
 
 冲突的产生：两个分支都对**同一个文件**进行了修改并提交就会出现冲突   
@@ -330,15 +332,18 @@ git status也会指出冲突发生的位置
 5. git stash apply  --> 编号，将指定编号记录从“某个地方”重新拿到工作区(可能有冲突)
 6. git stash drop  --> 编号，删除指定编号的记录
 
-## rebase变基 --可选操作//TODO
+## rebase 变基
 
-rebase使得git记录简洁
+rebase 的功能是使得 git 的提交记录变得简洁  
 
-git log容易变得冗长
+场景一：  
+某功能开发周期长，产生了很多次提交，导致`git log`冗长  
+但是对于看代码的人来讲，只有第一次初始代码和最后一次合并完成的代码才有意义  
+此时，rebase 可以将多个记录整合成一个记录  
 
 把某些记录整合成一条
 `git rebase -i <版本号x> --> 即把当前的记录到版本号x之间进行合并`
-`git rebase -i <HEAD~X> --> 如果x=3，即把当前记录到版本3之前进行合并`
+`git rebase -i <HEAD~X> --> 如果x=3，即把当前记录到最近2条记录进行合并`
 
 注意：合并记录时，不要合并已经push到远程仓库的记录
 
@@ -378,11 +383,13 @@ sign up:注册
 ## 将本地代码推送至 Github
 
 1. 在本地新建代码库(init -> add -> commit)
-2. 连接远程仓库：`git remote add origin https://github.com/xxx/xxx.git`
-3. 推送本地代码至远程仓库：`git push origin [分支名称]`  
-+ 例：git push origin dev  
-+ *origin代表的是远程分支*  
-+ 如果远程没有dev分支，则新建一个   
+2. 连接远程仓库：`git remote add origin https://github.com/<用户名>/<仓库名>`
+3. 推送本地代码至远程仓库：`git push origin <分支名称>`  
+    + 例：git push origin dev  
+    + *origin代表的是远程分支*  
+    + 如果远程没有dev分支，则新建一个   
+4. 如果本地已经存在代码库，直接使用`git remote add origin <url>`+`git push origin <分支名>`
+5. 有几个分支，就需要推送几次
 
 *将本地分支跟踪远程分支*  
 跟踪之后，本地提交与远程的不一样会有提示  
@@ -403,31 +410,26 @@ sign up:注册
     [remote "origin"]
     url = "https://用户名:密码@github.com/用户名/仓库名.git
 
-## ssh模式 --> 可选
+## 远程拉取代码
 
-把本机ssh公钥保存至github账户中      
-
-如何生成ssh公钥？       
-linux中：
-1. 进入用户家目录编辑.gitconfig，即git的配置文件，里面保存了github账户名和邮箱地址
-2. 执行命令ssh-keygen -t rsa -C '邮箱地址'
-该命令生成一个文件夹.ssh，其中有三个文件：id_rsa、id_rsa.pub、known_hosts        
-其中id_rsa是私钥自己保留，id_rsa.pub是公钥          
-把公钥内容复制到github中              
-
-## 克隆项目
-
-克隆一个项目就是下载云端的代码库  
+**首次拉取代码**  
+在一台新电脑上，可以通过 Git 来拉取远程仓库的代码  
 `git clone [ssh方式/HTTPS方式]`   
 该命令会在当前目录下新建一个目录，把内容全部放在新目录中  
+如果使用`git branch`命令发现少了分支，只是没有显示出来，使用切换分支命令依然可以正常切换到其他分支  
+注意：`git clone`之后默认加上了命令`git remote add origin`，所以该仓库默认就已经连接了远程端  
 
-克隆出错执行下面的命令(linux)  
+如果出错执行下面的命令(linux)  
 `eval "$(ssh-agent -s)"`   
 `ssh-add`   
 
-## 远程分支拉取代码
+**合并远程仓库的代码**  
+这里指的是在 A 地点写好代码后并上传，在 B 地点合并远程的代码  
+当然了，在 B 地点早就`git clone`过了，此时就可以用以下命令  
+`git pull origin dev  --> 从dev分支拉取代码，并合并到本地所在分支`  
 
-`git pull origin dev  --> 从dev分支拉取代码，并合并到本地所在分支`
+### 
+
 
 
 ## 个人主页
@@ -452,6 +454,18 @@ https://用户名.github.io/仓库名
 
 gitlab在国内访问比较快，可以通过gitlab来下载github的项目
 
+
+## ssh模式 --> 可选
+
+把本机ssh公钥保存至github账户中      
+
+如何生成ssh公钥？       
+linux中：
+1. 进入用户家目录编辑.gitconfig，即git的配置文件，里面保存了github账户名和邮箱地址
+2. 执行命令ssh-keygen -t rsa -C '邮箱地址'
+该命令生成一个文件夹.ssh，其中有三个文件：id_rsa、id_rsa.pub、known_hosts        
+其中id_rsa是私钥自己保留，id_rsa.pub是公钥          
+把公钥内容复制到github中              
 
 # 总结
 
