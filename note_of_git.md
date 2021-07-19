@@ -365,8 +365,8 @@ rebase 的功能是使得 git 的提交记录变得简洁
 1. repository:仓库
 2. star:收藏
 3. fork:复制克隆项目-->将别人的仓库完整复制到自己的仓库中，标记为forked from xx/x仓库
-+ fork的仓库独立存在，在自己的仓库做任何修改不影响被fork的仓库
-+ 可以通过自己的仓库向原仓库发起*pull request*，如果原仓库作者同意，可以合并到原仓库
+    + fork的仓库独立存在，在自己的仓库做任何修改不影响被fork的仓库
+    + 可以通过自己的仓库向原仓库发起*pull request*，如果原仓库作者同意，可以合并到原仓库
 4. watch:关注 --> 项目有更新会提示，类似朋友圈
 5. issue:问题 --> 发现代码BUG，但没有成型代码，需要讨论
 
@@ -427,10 +427,6 @@ sign up:注册
 这里指的是在 A 地点写好代码后并上传，在 B 地点合并远程的代码  
 当然了，在 B 地点早就`git clone`过了，此时就可以用以下命令  
 `git pull origin dev  --> 从dev分支拉取代码，并合并到本地所在分支`  
-
-### 
-
-
 
 ## 个人主页
 
@@ -503,10 +499,10 @@ linux中：
 24. git push -u origin <分支名> --> 推送其他分支，-u可省略
 25. git clone <url>  --> 复制代码，包含分支，不一定显示分支，可直接切换
 26. git pull origin <分支名> --> 更新代码，clone之后用pull来更新代码
-+ git pull =  git fetch + git merge
-+ git fetch origin --> 将远程代码拉取到本地的版本库
-+ git merge origin/<分支名> --> 合并代码，因为是远程拉取的，所有有前缀origin/
-25. git branch --set-upstream-to=origin/dev dev --> 将本地分支跟踪远程分支，最后两个dev表示本地与远程的对应
+    + git pull =  git fetch + git merge
+    + git fetch origin --> 将远程代码拉取到本地的版本库
+    + git merge origin/<分支名> --> 合并代码，因为是远程拉取的，所有有前缀origin/
+25. git branch --set-upstream-to=origin/dev dev --> 将本地分支跟踪远程分支，origin/dev表示远程库的分支，最后一个 dev 表示本地库的分支
 
 
 

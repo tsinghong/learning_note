@@ -215,12 +215,26 @@
 # print("今天%s很嗨皮！" % a)
 # print("今天%s很嗨皮！" % b)
 
+# def add_age(age):
+#     return age + 10
 
-x = "lilei"
-y = 18
-print(f'我的名字是{x.swapcase()}, 我的年龄是{y+10}')
+# x = "lilei"
+# y = 18
+# print(f'我的名字是{x.swapcase()}, 我的年龄是{add_age(y)}')
 
+# a = "你"
+# b = "我"
+# c = "李雷"
+# d = "韩梅梅"
+# print("今天 {0:*<10} 有点不开心，但是 {1:*>10} 很嗨皮".format(a, b))
+# print("今天 {0:|^10} 有点不开心，但是 {1:&>10} 很嗨皮".format(c, d))
 
+# print("多了一个空行！\n")
+# print("中间\t被隔开")
+
+# print("光标回到行首！\r")
+
+a = input("请输入一个数字：___\r")
 
 
 
