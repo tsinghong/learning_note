@@ -234,11 +234,27 @@
 
 # print("光标回到行首！\r")
 
-a = input("请输入一个数字：___\r")
+# a = input("请输入一个数字：___\r")
 
+# print(1>2 and 2>1)
+# print(1 > 2 or 2 > 1 or 3 > 1)
+# print(1 > 2 and 2 > 1 or 3 > 1)
+# print(1 > 2 or 2 < 1 and 3 > 1)
+# print(not 1 > 2)
 
+# a = 6
+# b = 8
+# print("a比b大" if a > b else "a比b小")
 
+# 九九乘法表
 
+a = b = 1
+while a <= 9:
+    while b < a + 1:
+        print("{0} * {1} = {2}".format(a, b, a * b), end='')
+        b += 1
+    a += 1
+    print()
 
 
 
