@@ -270,7 +270,18 @@ git status也会指出冲突发生的位置
 然后对其进行修改并提交，产生一个新的版本即可解决冲突   
 ![解决冲突](image/11.png)   
 
-查看分支图`git log --graph --pretty=oneline`
+查看分支图`git log --graph --pretty=oneline`  
+
+#### 快速解决冲突软件 -- Beyond Compare
+
+Beyond Compare 是一个独立的软件，使用之前需要将其与本机上的 git 连接起来  
+
+    git config --local merge.tool bc3   # 给工具起一个别名叫 bc3
+    git config --local mergetool.path '工具地址'  # 找到工具的安装地址
+    git config --local mergetool.keepBackup false # 禁用产生新文件功能
+
+    # 应用该软件来解决冲突
+    git mergetool  # 自动启动该软件
 
 ### 分支管理策略
 
@@ -336,16 +347,20 @@ git status也会指出冲突发生的位置
 
 rebase 的功能是使得 git 的提交记录变得简洁  
 
-场景一：  
 某功能开发周期长，产生了很多次提交，导致`git log`冗长  
 但是对于看代码的人来讲，只有第一次初始代码和最后一次合并完成的代码才有意义  
 此时，rebase 可以将多个记录整合成一个记录  
 
-把某些记录整合成一条
+把某些记录整合成一条  
 `git rebase -i <版本号x> --> 即把当前的记录到版本号x之间进行合并`
-`git rebase -i <HEAD~X> --> 如果x=3，即把当前记录到最近2条记录进行合并`
+`git rebase -i <HEAD~X> --> 如果x=3，即把当前记录到最近2条记录进行合并`  
+输入命令之后会出现提示，可以选择操作有`p, r, e, s`等等  
+s 表示把当前版本合并到上一个版本  
+通常是把后面的改成 s，第一个用 p  
 
-注意：合并记录时，不要合并已经push到远程仓库的记录
+合并完之后需要再一次提交，并且输入提交信息  
+
+注意：合并记录时，不要合并已经push到远程仓库的记录，会导致历史记录不一致。
 
 # 远程操作 
 
