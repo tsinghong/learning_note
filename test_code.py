@@ -248,13 +248,51 @@
 
 # 九九乘法表
 
-a = b = 1
-while a <= 9:
-    while b < a + 1:
-        print("{0} * {1} = {2}".format(a, b, a * b), end='')
-        b += 1
-    a += 1
-    print()
+# a = b = 1
+# while a <= 9:
+#     while b < a + 1:
+#         print("{0} * {1} = {2}".format(a, b, a * b), end='')
+#         b += 1
+#     a += 1
+#     print()
+
+# f = open('a.txt', mode='rt', encoding='utf-8')
+# res = f.read()
+# print(res)
+
+# 输入验证
+
+# username = input("请输入用户名：").strip()
+# userpassword = input("请输入密码：").strip()
+
+# with open('a.txt', mode='rt', encoding='utf-8') as f:
+#     for line in f:
+#         # print(line.split(":"))
+#         # print(line,end='') 
+#         name, password = line.strip().split(":")
+#         if username == name and userpassword == password:
+#             print("登录成功！")
+#             break
+#     else:
+#         print("用户名或密码错误！")
+
+
+# 文件复制
+
+# src_file = input("输入源文件路径：").strip()
+# des_file = input("输入目标文件路径：").strip()
+
+# with open(f"{src_file}", mode='rt', encoding='utf-8') as f1, \
+#     open(f"{des_file}", mode='wt', encoding='utf-8') as f2:
+#     # res=f1.read()
+#     f2.write(f1.read())
+
+# 案例：注册功能
+
+username = input('请输入用户名：')
+userpassword = input('请输入密码：')
+with open('a.txt', mode='at', encoding='utf-8') as f:
+    f.write(f'{username}:{userpassword}\n')
 
 
 
