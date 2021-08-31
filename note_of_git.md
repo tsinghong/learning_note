@@ -407,8 +407,8 @@ sign up:注册
 5. 有几个分支，就需要推送几次
 
 *将本地分支跟踪远程分支*  
-跟踪之后，本地提交与远程的不一样会有提示  
 `git branch --set-upstream-to=origin/dev dev`  
+跟踪之后，本地提交与远程的不一样会有提示  
 这里的最后一个dev与前面的origin/dev分别代表本地分支和远程分支  
 `git status`  
 
